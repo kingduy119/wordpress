@@ -1,0 +1,15 @@
+/*
+Theme Name: storefront Child Theme
+Theme URI: http: //thachpham.com
+Description: Day la child theme cua storefront
+Author: Thach Pham
+Author URI: https://thachpham.com
+Template: storefront
+Version: 0.1
+*/
+
+#billing_city_field,
+#shipping_city_field {
+  float: none;
+  width: 100%;
+}
