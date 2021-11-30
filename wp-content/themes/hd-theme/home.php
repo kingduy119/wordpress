@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-lg-8">
             <!-- Carousel lastest posts -->
-            <?php hd_home_carouse_category('carousel-home-page', 4); ?>
+            <?php hd_home_carouse_category('carousel-home-page', 3); ?>
             
             <!-- Nested row for non-featured blog posts-->
             <?php hd_home_page_category_lastest('doi-song', 'Đời Sống', 4); ?>

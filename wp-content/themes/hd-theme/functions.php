@@ -64,33 +64,33 @@ function hd_theme_breadcrumbs()
         echo '<nav aria-label="breadcrumb">';
         echo '<ol class="breadcrumb">';
         echo '<li class="breadcrumb-item"><a href="' . home_url('/') . '" class="text-decoration-none">Trang chủ</a></li>';
-            if (is_category() || is_single()) {
-                $categories = wp_get_post_terms(get_the_id(), 'category');
-                if ($categories) :
-                    foreach ($categories as $category) : ?>
-                        <li class="breadcrumb-item">
-                            <a href="<?php echo get_term_link($category->term_id, 'category') ?>" class="text-decoration-none">
-                                <?php echo $category->name; ?>
-                            </a>
-                        </li>
-                    <?php endforeach;
-                endif;
-                if (is_single()) {
-                    the_title('<li class="breadcrumb-item active" aria-current="page">', '</li>');
-                }
-            } elseif (is_page()) {
-                the_title('<li class="breadcrumb-item active">', '</li>');
-            } elseif (is_tag()) {
-                echo '<li class="breadcrumb-item active">Thẻ</li>';
-            } elseif (is_search()) {
-                echo '<li class="breadcrumb-item active">Tìm kiếm</li>';
-            } elseif (is_author()) {
-                echo '<li class="breadcrumb-item active">Tác giả</li>';
-            } elseif (is_archive()) {
-                echo '<li class="breadcrumb-item active">Lưu trữ</li>';
-            }else{
-                echo '<li class="breadcrumb-item active">Error 404</li>';
+        if (is_category() || is_single()) {
+            $categories = wp_get_post_terms(get_the_id(), 'category');
+            if ($categories) :
+                foreach ($categories as $category) : ?>
+                    <li class="breadcrumb-item">
+                        <a href="<?php echo get_term_link($category->term_id, 'category') ?>" class="text-decoration-none">
+                            <?php echo $category->name; ?>
+                        </a>
+                    </li>
+    <?php endforeach;
+            endif;
+            if (is_single()) {
+                the_title('<li class="breadcrumb-item active" aria-current="page">', '</li>');
             }
+        } elseif (is_page()) {
+            the_title('<li class="breadcrumb-item active">', '</li>');
+        } elseif (is_tag()) {
+            echo '<li class="breadcrumb-item active">Thẻ</li>';
+        } elseif (is_search()) {
+            echo '<li class="breadcrumb-item active">Tìm kiếm</li>';
+        } elseif (is_author()) {
+            echo '<li class="breadcrumb-item active">Tác giả</li>';
+        } elseif (is_archive()) {
+            echo '<li class="breadcrumb-item active">Lưu trữ</li>';
+        } else {
+            echo '<li class="breadcrumb-item active">Error 404</li>';
+        }
         echo '</ol>';
         echo '</nav>';
     }
@@ -157,83 +157,82 @@ function hd_theme_related_post($title = 'Bài viết liên quan', $count = 5)
 }
 
 // Home page method:
-function hd_home_carouse_category($carousel_id = '' ,$posts_per_page = 1){
-    $args = [
-        'posts_per_page'      => $posts_per_page,
-    ];
-    $the_query = new WP_Query($args);
+function hd_home_carouse_category($carousel_id = '', $posts_per_page = 1)
+{
+    $the_query = new WP_Query([
+        'posts_per_page'      => $posts_per_page
+    ]);
     ?>
-        <div id="<?php $carousel_id ?>" class="carousel slide mb-3" data-bs-ride="carousel">
+    <div id="<?php echo $carousel_id ?>" class="carousel slide mb-3" data-bs-ride="carousel">
 
-            <div class="carousel-inner">
-                <?php if( $the_query->have_posts() ) : ?>
-                    <?php while( $the_query->have_posts() ) : $the_query->the_post(); ?>
-                        <div class="carousel-item <?php echo $the_query->current_post == 0 ? 'active' : '' ?>">
-                            <?php the_post_thumbnail('blog-thumbnail', ['class'=>'d-block w-100']) ?>
-                            <div class="carousel-caption d-none d-md-block bg-secondary opacity-75">
-                                <h5>
-                                    <a class="text-decoration-none text-light" href="<?php the_permalink() ?>">
-                                        <p><?php echo $the_query->current_post; ?></p>
-                                        <b><?php the_excerpt() ?></b>
-                                    </a>
-                                </h5>
-                            </div>
+        <div class="carousel-inner">
+            <!-- Carousel inner -->
+            <?php if ($the_query->have_posts()) : ?>
+                <?php while ($the_query->have_posts()) : $the_query->the_post(); ?>
+                    <div class="carousel-item <?php echo $the_query->current_post == 0 ? 'active' : '' ?>">
+
+                        <?php the_post_thumbnail('blog-thumbnail', ['class' => 'd-block w-100']) ?>
+                        <div class="carousel-caption d-none d-md-block bg-secondary opacity-75">
+                            <h5>
+                                <a class="text-decoration-none text-light" href="<?php the_permalink() ?>">
+                                    <b><?php the_excerpt() ?></b>
+                                </a>
+                            </h5>
                         </div>
-                    <?php endwhile; ?>
-                <?php endif; ?>
-            </div>
-
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carousel-home-page" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carousel-home-page" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carousel-home-page" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-home-page" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carousel-home-page" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+                    </div>
+                <?php endwhile; ?>
+            <?php endif; ?>
         </div>
-        
-    <?php wp_reset_postdata();
+
+        <div class="carousel-indicators">
+            <!-- -->
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $carousel_id; ?>" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $carousel_id; ?>" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+<?php wp_reset_postdata();
 }
 
-function hd_home_page_category_lastest($cat_name = '', $cat_text = '' ,$posts_per_page = 4){
+function hd_home_page_category_lastest($cat_name = '', $cat_text = '', $posts_per_page = 4)
+{
     $args = [
         'category_name' => $cat_name,
         'posts_per_page' => $posts_per_page
     ];
     $the_query = new WP_Query($args);
-    ?>
-        <div class="card my-4">
-            <h5 class="card-header">
-                <?php echo $cat_text; ?>
-            </h5>
-            <div class="card-body">
-                <div class="row">
-                    <?php if( $the_query->have_posts() ) : ?>
-                        <?php while( $the_query->have_posts() ) : $the_query->the_post(); ?>
+?>
+    <div class="card my-4">
+        <h5 class="card-header">
+            <?php echo $cat_text; ?>
+        </h5>
+        <div class="card-body">
+            <div class="row">
+                <?php if ($the_query->have_posts()) : ?>
+                    <?php while ($the_query->have_posts()) : $the_query->the_post(); ?>
 
-                            <?php get_template_part('template-parts/content-home', get_post_format()); ?>
+                        <?php get_template_part('template-parts/content-home', get_post_format()); ?>
 
-                        <?php endwhile; ?>
-                    <?php endif; ?>
-                </div>
+                    <?php endwhile; ?>
+                <?php endif; ?>
             </div>
         </div>
-        <?php wp_reset_postdata() ?>
-    <?php
+    </div>
+    <?php wp_reset_postdata() ?>
+<?php
 }
 
 // comments
 function hd_blog_comment($comment, $args, $depth)
 {
     $GLOBALS['comment'] = $comment;
-    ?>
+?>
     <?php if ($comment->comment_approved == '1') : ?>
         <li class="media mb-4">
             <?php echo '<img class="d-flex mr-3 rounded-circle" src="' . get_avatar_url($comment) . '" style="width: 60px;">' ?>
@@ -254,10 +253,8 @@ function hd_blog_comment($comment, $args, $depth)
 
 // Widget custom
 require_once get_template_directory() . '/widgets/hd_widget_lastest_post.php';
-function hd_load_widget_lastest_post() {
-    register_widget( 'hd_lastest_post' ); // gọi ID widget
+function hd_load_widget_lastest_post()
+{
+    register_widget('hd_lastest_post'); // gọi ID widget
 }
-add_action( 'widgets_init', 'hd_load_widget_lastest_post' );
-
-
-
+add_action('widgets_init', 'hd_load_widget_lastest_post');
