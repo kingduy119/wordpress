@@ -70,12 +70,14 @@
 
         </div>
 
-        <script src="<?php bloginfo("stylesheet_directory") ?> /libs/jquery-3.4.1.min.js"></script>
-        <script src="<?php bloginfo("stylesheet_directory") ?> /libs/bootstrap/js/bootstrap.min.js"></script>
-        <script src="js/main.js"></script>
+        <script src="<?php bloginfo("stylesheet_directory") ?>/libs/jquery-3.4.1.min.js"></script>
+        <script src="<?php bloginfo("stylesheet_directory") ?>/libs/bootstrap/js/bootstrap.min.js"></script>
+        <script src="<?php bloginfo("stylesheet_directory") ?>/js/main.js"></script>
+        <!-- <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v6.0"></script> -->
+        
         <div id="fb-root"></div>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v6.0"></script>
-
+        <script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6"></script>
         <?php wp_footer(); ?>
     </body>
 </html>
