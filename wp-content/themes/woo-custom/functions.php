@@ -30,6 +30,7 @@ function init_theme()
             'before_title'  => '<h3 class="widget-title">',
             'after_title'   => '</h3>',
         ));
+        
     }
 
     function set_postview($postID)
@@ -120,11 +121,11 @@ function get_products_most_popular() {
                     <?php
                         $args = array(
                             'type' 			=> 'product',
-                            'child_of' 		=> 0,
-                            'parent' 		=> 0,
-                            'hide_empty'	=> 0,
-                            'number' 		=> 3,
                             'taxonomy' 		=> 'product_cat',
+                            // 'number' 		=> 3,
+                            'parent' 		=> 0,
+                            'child_of' 		=> 0,
+                            'hide_empty'	=> 0,
                         );
                         $categories = get_categories($args);
                         foreach( $categories as $category ) { ?>

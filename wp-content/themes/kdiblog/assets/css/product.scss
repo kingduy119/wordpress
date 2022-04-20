@@ -1,0 +1,60 @@
+.product {
+
+  &--thumbnail {
+    width: 100%;
+    height: 100%;
+  }
+
+  &--title {
+    font-size: 1rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  &--onsale {
+    
+  }
+
+  &--price {
+    margin-bottom: 0.2rem;
+
+    del {
+      color: grey;
+    }
+    ins {
+      color: red;
+      text-decoration: none;
+    }
+  }
+}
+
+.productcard {
+  max-width: 300px;
+  overflow: hidden;
+  
+  &--header {
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      display: block;
+      padding-top: 100%;
+    }
+
+    .product--thumbnail {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  &--content {
+    text-align: center;
+  }
+}

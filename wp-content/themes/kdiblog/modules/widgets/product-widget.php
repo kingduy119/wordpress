@@ -1,0 +1,258 @@
+<?php
+
+/**
+ * ******************************************
+ * KDI WIDGETS PRODUCT
+ * ******************************************
+ */
+
+if( ! class_exists( 'KDI_Product' ) ) :
+    class KDI_Product extends KDI_Fields {
+
+        public function __construct() {
+            $this->wg_id            = 'kdi_products';
+            $this->wg_name          = __( 'KDI Products', 'kdi' );
+            $this->wg_class         = 'kdi_widget_products';
+            $this->wg_description   = __( 'Loop products with template', 'kdi' );
+
+            $this->settings = array(
+                // 'title' => array(
+                //     'type'  => 'text',
+                //     'std'   => '',
+                //     'label' => __( 'Title', 'kdi' ),
+                // ),
+                'show'        => array(
+                    'type'    => 'select',
+                    'std'     => '',
+                    'label'   => __( 'Show', 'kdi' ),
+                    'options' => array(
+                        ''          => __( 'All products', 'kdi' ),
+                        'featured'  => __( 'Featured products', 'kdi' ),
+                        'onsale'    => __( 'On-sale products', 'kdi' ),
+                        'category'  => __( 'Category', 'kdi' ),
+                    ),
+                ),
+                'product_cat' => array(
+                    'type'      => 'product_cat',
+                    'std'       =>  '',
+                    'label'     => __( 'Product cat', 'kdi' ),
+                ),
+                'posts_per_page' => array(
+                    'type'  => 'number',
+                    'std'   => 6,
+                    'min'   => 1,
+                    'max'   => 30,
+                    'label' => __( 'Number of post to show', 'kdi' ),
+                ),
+                'xs' => array(
+                    'style' => 'width: 20%; display: inline-block;',
+                    'type'  => 'number',
+                    'std'   => 3,
+                    'min'   => 1,
+                    'max'   => 6,
+                    'label' => __( 'mobile', 'kdi' ),
+                ),
+                'sm' => array(
+                    'style' => 'width: 20%; display: inline-block;',
+                    'type'  => 'number',
+                    'std'   => 3,
+                    'min'   => 1,
+                    'max'   => 6,
+                    'label' => __( 'tablet', 'kdi' ),
+                ),
+                'md' => array(
+                    'style' => 'width: 20%; display: inline-block;',
+                    'type'  => 'number',
+                    'std'   => 3,
+                    'min'   => 1,
+                    'max'   => 6,
+                    'label' => __( 'desktop', 'kdi' ),
+                ),
+                'oderby'        => array(
+                    'type'      => 'select',
+                    'std'       =>  'price',
+                    'label'     => __( 'Orderby', 'kdi' ),
+                    'options'   => array(
+                        'price'  => 'Price',
+                        'rand'  => 'Random',
+                        'sales'    => 'Sales',
+                    ),
+                ),
+                'order' => array(
+                    'type'      => 'select',
+                    'std'       =>  'DESC',
+                    'label'     => __( 'Order', 'kdi' ),
+                    'options'   => array(
+                        'DESC'  => 'DESC',
+                        'ASC'   => 'ASC',
+                    ),
+                ),
+                'hide_free'   => array(
+                    'type'  => 'checkbox',
+                    'std'   => 0,
+                    'label' => __( 'Hide free products', 'woocommerce' ),
+                ),
+                'show_hidden' => array(
+                    'type'  => 'checkbox',
+                    'std'   => 0,
+                    'label' => __( 'Show hidden products', 'woocommerce' ),
+                ),
+                'template' => array(
+                    'type'      => 'select',
+                    'std'       => 'modules/product/card',
+                    'label'     => __( 'Template', 'kdi' ),
+                    'options'   => array(
+                        'modules/product/card'  => __( 'Product', 'kdi' ),
+                    ),
+                ),
+            );
+
+
+            add_action( 'kdi_widget_field_product_cat', array( $this, 'product_cat_field' ), 10, 4 );
+
+            parent::__construct();
+        }
+
+        public function product_cat_field( $key, $value, $setting, $instance ) {
+            $categories = get_categories( array( 
+                'hide_empty'    => 0,
+                'parent'        => 0,
+                'taxonomy'      => 'product_cat',
+            ) );
+            ?>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
+                <select class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>">
+                    <?php foreach ( $categories as $cat ) : ?>
+                        <option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( $cat->slug, $value ); ?>><?php echo esc_html( $cat->name ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </p>
+            <?php
+        }
+
+        public function widget( $args, $instance ) {
+            extract( $args );
+            
+            // $title              = isset( $instance['title'] ) ? $instance['title'] : $this->settings['title']['std'];
+            // $template           = isset( $instance['template'] ) ? $instance['template'] : $this->settings['template']['std'];
+
+            $xs         = isset( $instance['xs'] ) ? $instance['xs'] : $this->settings['xs']['std'];
+            $sm         = isset( $instance['sm'] ) ? $instance['sm'] : $this->settings['sm']['std'];
+            $md         = isset( $instance['md'] ) ? $instance['md'] : $this->settings['md']['std'];
+            
+            $query = $this->get_product( $instance );
+                
+            echo $before_widget;
+
+            echo '<div class="products-wrapper">';
+
+            echo '<div class="row row-cols-'.$xs.' row-cols-sm-'.$sm.' row-cols-md-'.$md.' g-1">';
+            while( $query->have_posts() ) : $query->the_post();
+                echo '<div class="col">';
+                kdi_product_part( 'templates/card' );
+                echo '</div>';    
+            endwhile;
+            echo '</div>';
+
+            echo '</div>';
+            echo $after_widget;
+
+            wp_reset_postdata();
+        }
+
+        public function get_product( $instance ) {
+            $posts_per_page     = isset( $instance['posts_per_page'] ) ? $instance['posts_per_page'] : $this->settings['posts_per_page']['std'];
+            $show               = ! empty( $instance['show'] ) ? sanitize_title( $instance['show'] ) : $this->settings['show']['std'];
+            $orderby            = isset( $instance['orderby'] ) ? $instance['orderby'] : $this->settings['orderby']['std'];
+            $order              = isset( $instance['order'] ) ? $instance['order'] : $this->settings['order']['std'];
+            $product_cat        = isset( $instance['product_cat'] ) ? $instance['product_cat'] : $this->settings['product_cat']['std'];
+            
+            $product_visibility_term_ids = wc_get_product_visibility_term_ids();
+
+            $query_args = array(
+                'posts_per_page' => $posts_per_page,
+                'post_status'    => 'publish',
+                'post_type'      => 'product',
+                'no_found_rows'  => 1,
+                'order'          => $order,
+                'meta_query'     => array(),
+                'tax_query'      => array(
+                    'relation' => 'AND',
+                ),
+                'product_cat'   => '',
+                // 'product_cat'   => array(),
+            ); // WPCS: slow query ok.
+
+            if ( empty( $instance['show_hidden'] ) ) {
+                $query_args['tax_query'][] = array(
+                    'taxonomy' => 'product_visibility',
+                    'field'    => 'term_taxonomy_id',
+                    'terms'    => is_search() ? $product_visibility_term_ids['exclude-from-search'] : $product_visibility_term_ids['exclude-from-catalog'],
+                    'operator' => 'NOT IN',
+                );
+                $query_args['post_parent'] = 0;
+            }
+    
+            if ( ! empty( $instance['hide_free'] ) ) {
+                $query_args['meta_query'][] = array(
+                    'key'     => '_price',
+                    'value'   => 0,
+                    'compare' => '>',
+                    'type'    => 'DECIMAL',
+                );
+            }
+    
+            if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
+                $query_args['tax_query'][] = array(
+                    array(
+                        'taxonomy' => 'product_visibility',
+                        'field'    => 'term_taxonomy_id',
+                        'terms'    => $product_visibility_term_ids['outofstock'],
+                        'operator' => 'NOT IN',
+                    ),
+                ); // WPCS: slow query ok.
+            }
+
+            switch ( $show ) {
+                case 'featured':
+                    $query_args['tax_query'][] = array(
+                        'taxonomy' => 'product_visibility',
+                        'field'    => 'term_taxonomy_id',
+                        'terms'    => $product_visibility_term_ids['featured'],
+                    );
+                    break;
+                case 'onsale':
+                    $product_ids_on_sale    = wc_get_product_ids_on_sale();
+                    $product_ids_on_sale[]  = 0;
+                    $query_args['post__in'] = $product_ids_on_sale;
+                    break;
+                case 'category':
+                    $query_args['product_cat'] = $product_cat;
+                    break;
+            }
+
+            switch ( $orderby ) {
+                case 'price':
+                    $query_args['meta_key'] = '_price'; // WPCS: slow query ok.
+                    $query_args['orderby']  = 'meta_value_num';
+                    break;
+                // case 'featured':
+                //     $query_args['meta_key'] = '_featured';
+                //     break;
+                case 'rand':
+                    $query_args['orderby'] = 'rand';
+                    break;
+                case 'sales':
+                    $query_args['meta_key'] = 'total_sales'; // WPCS: slow query ok.
+                    $query_args['orderby']  = 'meta_value_num';
+                    break;
+                default:
+                    $query_args['orderby'] = 'date';
+            }
+
+            return new WP_Query( $query_args );
+        }
+    }
+endif;
+

@@ -1,0 +1,51 @@
+.post {
+    &-thumbnail {
+      width: 100%;
+      height: auto;
+  
+      .post-category {
+        position: absolute;
+        bottom: 3%;
+        left: 3%;
+      }
+    }
+  
+    &-tags a {
+      text-decoration: none;
+      color: gray;
+      background-color: #ddd;
+      padding: 0.1rem 0.4rem ;
+  
+      &:hover {
+        color: white;
+        background-color: black;
+      }
+    }
+  
+    &-author {
+      font-weight: 700;
+      color: #8c8c8c;
+      text-transform: uppercase;
+  
+      a {
+        color: #1a8cff;
+        text-decoration: none;
+      }
+    }
+  
+    // -------
+    &-date,
+    &-views,
+    &-comments {
+      margin-right: 0.5rem;
+  
+      a {
+        text-decoration: none;
+        color: black;
+  
+        &:hover {
+          color: #0d6efd;
+        }
+      }
+    }
+  }
