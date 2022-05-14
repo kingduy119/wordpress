@@ -1,8 +1,12 @@
 
-<div id="page-sidebar">
+<div id="page-sidebar" class="container">
     <?php
-        if( function_exists('dynamic_sidebar') ) :
+        // echo 'TPYE: ' . get_post_type();
+        // if( 'post' == get_post_type() ) :
             dynamic_sidebar('sidebar');
-        endif;
+        // elseif( 'product' == get_post_type() ) :
+            // dynamic_sidebar('sidebar-product');
+        // endif;
     ?>
 </div>
+

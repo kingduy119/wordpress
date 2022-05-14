@@ -7,8 +7,8 @@
  * ******************************************
  */
 
-if( ! class_exists( 'KDI_Post' ) ) :
-    class KDI_Post extends KDI_Fields {
+if( ! class_exists( 'KDI_Widget_Post' ) ) :
+    class KDI_Widget_Post extends KDI_Fields {
 
         function __construct() {
             $this->wg_id            = 'kdi_posts';

@@ -29,7 +29,7 @@ if( ! class_exists( 'KDI_Admin' ) ) {
                     height: 100%;
                     background-image: url("<?php echo assets('images/bg-login.jpg'); ?>");
                     background-repeat: no-repeat;
-                    background-size: 100%;
+                    background-size: cover;
                 }
 
                 #login #loginform {

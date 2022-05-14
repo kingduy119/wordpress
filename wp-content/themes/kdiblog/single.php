@@ -4,14 +4,17 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-lg-9">
-
-            <?php do_action( 'kdi_loop_content' ); ?>
+            <?php
+            /**
+             * kdi_loop_content - 5
+             */
+            do_action( 'kdi_loop_content' );
+            ?>
 
         </div>
         <div class="col-12 col-lg-3">
-
-            <?php  get_sidebar(); ?>
-
+            <?php get_sidebar(); ?>
+            
         </div>
     </div>
 </div>

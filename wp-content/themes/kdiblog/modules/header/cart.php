@@ -23,6 +23,24 @@
         z-index: 9;
         padding: 4px 8px;
     }
+
+    .kdi-header-cart__content {
+        background-color: #96D6FF;
+    }
+    .kdi-header-cart__content a {
+        text-decoration: none;
+    }
+
+    .kdi-header-cart__content .quantity,
+    .woocommerce-mini-cart__empty-message,
+    .woocommerce-mini-cart__total.total {
+        color: white;
+    }
+
+    .woocommerce-mini-cart__buttons .wc-forward {
+        background-color: teal !important;
+        opacity: 0.7;
+    }
     </style>
 </head>
 <div class="kdi-header-cart">

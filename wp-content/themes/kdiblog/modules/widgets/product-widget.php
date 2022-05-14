@@ -6,21 +6,16 @@
  * ******************************************
  */
 
-if( ! class_exists( 'KDI_Product' ) ) :
-    class KDI_Product extends KDI_Fields {
+if( ! class_exists( 'KDI_Product_Widget' ) ) :
+    class KDI_Product_Widget extends KDI_Fields {
 
         public function __construct() {
-            $this->wg_id            = 'kdi_products';
+            $this->wg_id            = 'kdi_product_widget';
             $this->wg_name          = __( 'KDI Products', 'kdi' );
-            $this->wg_class         = 'kdi_widget_products';
-            $this->wg_description   = __( 'Loop products with template', 'kdi' );
+            $this->wg_class         = 'kdi_product_widget';
+            $this->wg_description   = __( 'Product loop item', 'kdi' );
 
             $this->settings = array(
-                // 'title' => array(
-                //     'type'  => 'text',
-                //     'std'   => '',
-                //     'label' => __( 'Title', 'kdi' ),
-                // ),
                 'show'        => array(
                     'type'    => 'select',
                     'std'     => '',
@@ -34,7 +29,7 @@ if( ! class_exists( 'KDI_Product' ) ) :
                 ),
                 'product_cat' => array(
                     'type'      => 'product_cat',
-                    'std'       =>  '',
+                    'std'       => '',
                     'label'     => __( 'Product cat', 'kdi' ),
                 ),
                 'posts_per_page' => array(
@@ -68,14 +63,14 @@ if( ! class_exists( 'KDI_Product' ) ) :
                     'max'   => 6,
                     'label' => __( 'desktop', 'kdi' ),
                 ),
-                'oderby'        => array(
+                'orderby'        => array(
                     'type'      => 'select',
                     'std'       =>  'price',
                     'label'     => __( 'Orderby', 'kdi' ),
                     'options'   => array(
-                        'price'  => 'Price',
+                        'price' => 'Price',
                         'rand'  => 'Random',
-                        'sales'    => 'Sales',
+                        'sales' => 'Sales',
                     ),
                 ),
                 'order' => array(
@@ -99,32 +94,44 @@ if( ! class_exists( 'KDI_Product' ) ) :
                 ),
                 'template' => array(
                     'type'      => 'select',
-                    'std'       => 'modules/product/card',
+                    'std'       => 'modules/woo/templates/card',
                     'label'     => __( 'Template', 'kdi' ),
                     'options'   => array(
-                        'modules/product/card'  => __( 'Product', 'kdi' ),
+                        'modules/woo/templates/card'    => __( 'Default', 'kdi' ),
                     ),
                 ),
             );
 
-
             add_action( 'kdi_widget_field_product_cat', array( $this, 'product_cat_field' ), 10, 4 );
-
             parent::__construct();
         }
 
         public function product_cat_field( $key, $value, $setting, $instance ) {
             $categories = get_categories( array( 
-                'hide_empty'    => 0,
+                'hide_empty'    => false,
                 'parent'        => 0,
                 'taxonomy'      => 'product_cat',
             ) );
             ?>
             <p>
                 <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
-                <select class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>">
+                <select class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>"
+                    style="height: 5rem;"
+                    multiple
+                >
                     <?php foreach ( $categories as $cat ) : ?>
                         <option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( $cat->slug, $value ); ?>><?php echo esc_html( $cat->name ); ?></option>
+                        <?php
+                        $children = get_categories( array(
+                            'taxonomy'      => 'product_cat',
+                            'parent'        => $cat->cat_ID,
+                            'hide_empty'    => false,
+                        ) );
+                        foreach( $children as $child ) :
+                        ?>
+                            <option value="<?php echo esc_attr( $child->slug ); ?>" <?php selected( $child->slug, $value ); ?>>--<?php echo esc_html( $child->name ); ?></option>
+                        <?php endforeach; ?> 
+                        
                     <?php endforeach; ?>
                 </select>
             </p>
@@ -134,31 +141,21 @@ if( ! class_exists( 'KDI_Product' ) ) :
         public function widget( $args, $instance ) {
             extract( $args );
             
-            // $title              = isset( $instance['title'] ) ? $instance['title'] : $this->settings['title']['std'];
-            // $template           = isset( $instance['template'] ) ? $instance['template'] : $this->settings['template']['std'];
-
             $xs         = isset( $instance['xs'] ) ? $instance['xs'] : $this->settings['xs']['std'];
             $sm         = isset( $instance['sm'] ) ? $instance['sm'] : $this->settings['sm']['std'];
             $md         = isset( $instance['md'] ) ? $instance['md'] : $this->settings['md']['std'];
+            $template   = isset( $instance['template'] ) ? $instance['template'] : $this->settings['template']['std'];
             
             $query = $this->get_product( $instance );
-                
+
+            $item['before']     = '<div class="col">';
+            $item['after']      = '</div>';
+            $contain['before']  = '<div class="row row-cols-'.$xs.' row-cols-sm-'.$sm.' row-cols-md-'.$md.' g-1">';
+            $contain['after']   = '</div>';
+
             echo $before_widget;
-
-            echo '<div class="products-wrapper">';
-
-            echo '<div class="row row-cols-'.$xs.' row-cols-sm-'.$sm.' row-cols-md-'.$md.' g-1">';
-            while( $query->have_posts() ) : $query->the_post();
-                echo '<div class="col">';
-                kdi_product_part( 'templates/card' );
-                echo '</div>';    
-            endwhile;
-            echo '</div>';
-
-            echo '</div>';
+                kdi_post_loop( $query, $template, $item, $contain );
             echo $after_widget;
-
-            wp_reset_postdata();
         }
 
         public function get_product( $instance ) {
@@ -181,7 +178,6 @@ if( ! class_exists( 'KDI_Product' ) ) :
                     'relation' => 'AND',
                 ),
                 'product_cat'   => '',
-                // 'product_cat'   => array(),
             ); // WPCS: slow query ok.
 
             if ( empty( $instance['show_hidden'] ) ) {
@@ -237,9 +233,6 @@ if( ! class_exists( 'KDI_Product' ) ) :
                     $query_args['meta_key'] = '_price'; // WPCS: slow query ok.
                     $query_args['orderby']  = 'meta_value_num';
                     break;
-                // case 'featured':
-                //     $query_args['meta_key'] = '_featured';
-                //     break;
                 case 'rand':
                     $query_args['orderby'] = 'rand';
                     break;

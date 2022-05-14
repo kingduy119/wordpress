@@ -14,13 +14,17 @@
 <body>
     <div id="page" class="pb-4">
         <header id="page-header">
-            <?php
-                get_template_part('modules/header/navbar');
-                get_template_part('modules/header/breadcrumb');
-            ?>
+        <?php 
+            // get_template_part('modules/header/navbar');
+            // get_template_part('modules/header/breadcrumb');
+            // if( is_active_sidebar( 'page-header' ) ) {
+                dynamic_sidebar('page-header');
+            // }
+            
+        ?>
+
         </header>
 
-        <?php if( is_active_sidebar( 'middle-header-content' ) ) { dynamic_sidebar('middle-header-content'); } ?>
         
         <div id="page-content" class="mb-3">
 

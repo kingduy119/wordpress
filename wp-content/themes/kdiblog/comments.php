@@ -1,9 +1,16 @@
 <?php 
+function show_comments() {
+    if ( have_comments() ) :
+        echo '<h5>' .esc_html_e( 'Bình luận:' , 'kdi' ). '</h5>';
+        wp_list_comments( array(
+            'max_depth' => 2,
+            'callback'  => 'comments_callback',
+        ) );
+        echo '</div>';
+    endif;
+}
 
-if ( post_password_required() ) { return; } 
-
-function comments_callback($comment, $args, $depth)
-{
+function comments_callback($comment, $args, $depth) {
     // $GLOBALS['comment'] = $comment;
     if ($comment->comment_approved == '1') :
     ?>
@@ -36,60 +43,91 @@ function comments_callback($comment, $args, $depth)
                         )
                     );
                 ?>
-            </div>
-            
+            </div>            
         </div>
     <?php endif;
 }
+
+
+function show_woo_comments() {
+    if ( have_comments() ) : ?>
+        <ol class="commentlist">
+            <?php wp_list_comments( apply_filters( 'woocommerce_product_review_list_args', array( 'callback' => 'woocommerce_comments' ) ) ); ?>
+        </ol>
+        <?php
+        if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) :
+            echo '<nav class="woocommerce-pagination">';
+            paginate_comments_links(
+                apply_filters(
+                    'woocommerce_comment_pagination_args',
+                    array(
+                        'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
+                        'next_text' => is_rtl() ? '&larr;' : '&rarr;',
+                        'type'      => 'list',
+                    )
+                )
+            );
+            echo '</nav>';
+        endif;
+        ?>
+    <?php else : ?>
+        <p class="woocommerce-noreviews"><?php esc_html_e( 'There are no reviews yet.', 'woocommerce' ); ?></p>
+    <?php endif; 
+}
+
+function comments_closed() {
+    if ( ! comments_open() && 0 !== intval( get_comments_number() ) && post_type_supports( get_post_type(), 'comments' ) ) {
+        echo '<p class="no-comments">' . esc_html_e( 'Comments are closed.', 'kdi' ) . '</p>';
+    }
+}
+
+function show_comment_form() {
+    $comments_arg = array(
+        // 'form' => array(), 
+        'fields' => array(
+            'author'    => '<div class="form-group">'.
+                                '<label>' . __('Name') . '</label>' .
+                                '<input id="author" name="author" class="form-control" />' .
+                            '</div>',
+            'email'     => '<div class="form-group">'.
+                                '<label for="email">' . __( 'Email' ) . '</label> ' .
+                                '<input type="email" id="email" name="email" class="form-control" type="text" size="30" />
+                            </div>',
+            'url'       => '<div class="form-group">'.
+                                '<label for="url">' . __( 'URL' ) . '</label> ' .
+                                '<input type="url" id="url" name="url" class="form-control" type="text" size="30" />
+                            </div>' 
+        ),
+        'comment_field' => '<div class="form-group">' . 
+                                '<label for="comment">' . __( 'Bình luận' ) . '</label><span>*</span>' .
+                                '<textarea id="comment" class="form-control" name="comment" rows="3" aria-required="true"></textarea>' . 
+                            '</div>',
+        // 'comment_notes_after'   => '',
+        // 'title_reply'           => 'Bình luận của bạn',
+        // 'title_reply_to'        => 'Trả lời bình luận của %s',
+        // 'cancel_reply_link'     => '( Hủy )',
+        // 'comment_notes_before'  => 'Địa chỉ email của bạn sẽ không công khai.',
+        // 'class_submit'          => 'btn btn-primary',
+        // 'label_submit'          => 'Gửi bình luận'
+    );
+
+    comment_form($comments_arg);
+}
+
+if ( post_password_required() ) { return; } 
 ?>
 
 <section id="comments" class="mb-4">
+    
+    <?php
+    // show_comments();
 
-    <h5><?php esc_html_e( 'Bình luận:' , 'kdi' ); ?></h5>
-    <div class="comments-wrapper-list mb-4">
-        <?php
-            if( have_comments() ) {
-                wp_list_comments( array(
-                    'max_depth'     => 2,
-                    'callback'      => 'comments_callback',
-                ) );
-            }
-        ?>
-    </div>
+    show_woo_comments();
 
-    <?php if ( ! comments_open() && 0 !== intval( get_comments_number() ) && post_type_supports( get_post_type(), 'comments' ) ) : ?>
-        <p class="no-comments"><?php esc_html_e( 'Comments are closed.', 'kdi' ); ?></p>
-    <?php endif;
+    // comments_closed();
 
-        $comments_arg = array(
-            // 'form' => array(), 
-            'fields' => array(
-                'author'    => '<div class="form-group">'.
-                                    '<label>' . __('Name') . '</label>' .
-                                    '<input id="author" name="author" class="form-control" />' .
-                                '</div>',
-                'email'     => '<div class="form-group">'.
-                                    '<label for="email">' . __( 'Email' ) . '</label> ' .
-                                    '<input type="email" id="email" name="email" class="form-control" type="text" size="30" />
-                                </div>',
-                'url'       => '<div class="form-group">'.
-                                    '<label for="url">' . __( 'URL' ) . '</label> ' .
-                                    '<input type="url" id="url" name="url" class="form-control" type="text" size="30" />
-                                </div>' 
-            ),
-            'comment_field' => '<div class="form-group">' . 
-                                    '<label for="comment">' . __( 'Bình luận' ) . '</label><span>*</span>' .
-                                    '<textarea id="comment" class="form-control" name="comment" rows="3" aria-required="true"></textarea>' . 
-                                '</div>',
-            // 'comment_notes_after'   => '',
-            // 'title_reply'           => 'Bình luận của bạn',
-            // 'title_reply_to'        => 'Trả lời bình luận của %s',
-            // 'cancel_reply_link'     => '( Hủy )',
-            // 'comment_notes_before'  => 'Địa chỉ email của bạn sẽ không công khai.',
-            // 'class_submit'          => 'btn btn-primary',
-            // 'label_submit'          => 'Gửi bình luận'
-        );
+    // show_comment_form();
 
-        comment_form($comments_arg);
     ?>
+
 </section>
