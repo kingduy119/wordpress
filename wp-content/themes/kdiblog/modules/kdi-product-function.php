@@ -65,8 +65,8 @@ if( ! function_exists( 'kdi_upsell_display' ) ) {
             'columns'        => $columns,
         );
 
-		$orderby = isset( $args['orderby'] ) ? $args['orderby'] : $orderby;
 		$order   = isset( $args['order'] ) ? $args['order'] : $order;
+		$orderby = isset( $args['orderby'] ) ? $args['orderby'] : $orderby;
 		$limit   = isset( $args['posts_per_page'] ) ? $args['posts_per_page'] : $limit;
 
 		// Get visible upsells then sort them at random, then limit result set.
@@ -89,37 +89,57 @@ if( ! function_exists( 'kdi_upsell_display' ) ) {
 }
 
 // -------------------------------------
-function kdi_product_related( $args = array() ) {
+if( ! function_exists( 'kdi_product_related' ) ) {
+    function kdi_product_related( $args = array() ) {
 
-    global $product;
-    if ( ! $product ) { return; }
-
-    $product_cats = get_the_terms( get_the_ID(), 'product_cat');
-    $slugs = '';
-    foreach( $product_cats as $cat ){
-        $slugs .= $cat->slug . ',';
+        global $product;
+        if ( ! $product ) { return; }
+    
+        $product_cats = get_the_terms( get_the_ID(), 'product_cat');
+        $slugs = '';
+        foreach( $product_cats as $cat ){
+            $slugs .= $cat->slug . ',';
+        }
+    
+        $defaults = array(
+            'posts_per_page'    => 4,
+            'columns'           => 4,
+            'orderby'           => 'rand', // @codingStandardsIgnoreLine.
+            'order'             => 'desc',
+            'product_cat'       => $slugs,
+        );
+        $args = wp_parse_args( $args, $defaults );
+        $query = new WP_Query( $args );
+    
+        $template           = 'modules/woo/templates/card';
+        $item['before']     = '<div class="col">';
+        $item['after']      = '</div>';
+        $contain['before']  = '<div class="row row-cols-2 row-cols-sm-4 g-1">';
+        $contain['after']   = '</div>';
+    
+        kdi_post_loop( $query, $template, $item, $contain );
     }
-
-    $defaults = array(
-        'posts_per_page'    => 4,
-        'columns'           => 4,
-        'orderby'           => 'rand', // @codingStandardsIgnoreLine.
-        'order'             => 'desc',
-        'product_cat'       => $slugs,
-    );
-    $args = wp_parse_args( $args, $defaults );
-    $query = new WP_Query( $args );
-
-    $template           = 'modules/woo/templates/card';
-    $item['before']     = '<div class="col">';
-    $item['after']      = '</div>';
-    $contain['before']  = '<div class="row row-cols-2 row-cols-sm-4 g-1">';
-    $contain['after']   = '</div>';
-
-    kdi_post_loop( $query, $template, $item, $contain );
 }
 
 // -------------------------------------
+
+function products_custoom_open_shortcode() {
+    echo '<div class="container">' .
+            '<div class="row g-1">' .
+                '<div class="col col-md-12 col-lg-3">';
+                dynamic_sidebar('sidebar-product');
+    echo        '</div>'.
+                '<div class="col col-md-12 col-lg-9">';
+}
+function products_custoom_close_shortcode() {
+    echo '</div></div></div>';
+}
+
+function kdi_shop_loop_item_title() {
+    wc_get_template( 'loop/title.php' );
+}
+// -------------------------------------
+
 if ( ! function_exists( 'kdi_custom_product_single_tabs' ) ) {
 	
 	function kdi_custom_product_single_tabs( $tabs = array() ) {

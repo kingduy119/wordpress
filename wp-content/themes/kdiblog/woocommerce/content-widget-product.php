@@ -25,19 +25,30 @@ if ( ! is_a( $product, 'WC_Product' ) ) {
 }
 
 ?>
-<li>
+<div class="col">
+<div id="product-<?php esc_attr( the_ID() ); ?>" class="widget-product">
 	<?php do_action( 'woocommerce_widget_product_item_start', $args ); ?>
 
 	<a href="<?php echo esc_url( $product->get_permalink() ); ?>">
-		<?php echo $product->get_image(); // PHPCS:Ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span class="product-title"><?php echo wp_kses_post( $product->get_name() ); ?></span>
+		<div class="widget-product__thumbnail ratio ratio-1x1">
+			<img
+				alt="Product thumbnail"
+				class="rounded h-100"
+				src="<?php echo get_the_post_thumbnail_url( get_the_ID(), 'full' ); ?>"
+			>
+		</div>
+
+		<span class="widget-product__title"><?php echo wp_kses_post( $product->get_name() ); ?></span>
 	</a>
 
 	<?php if ( ! empty( $show_rating ) ) : ?>
 		<?php echo wc_get_rating_html( $product->get_average_rating() ); // PHPCS:Ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	<?php endif; ?>
 
-	<?php echo $product->get_price_html(); // PHPCS:Ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-
+	<p class="widget-product__price">
+		<?php echo $product->get_price_html(); ?>
+	</p>
+	
 	<?php do_action( 'woocommerce_widget_product_item_end', $args ); ?>
-</li>
+</div>
+</div>

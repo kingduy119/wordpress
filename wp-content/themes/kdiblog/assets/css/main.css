@@ -83,7 +83,13 @@
   color: #0d6efd;
 }
 
+.woocommerce-loop-product__link {
+  text-decoration: none;
+}
+
+/* #GLOBAL-PRODUCT */
 .product {
+  padding-bottom: 1.5rem;
   /* product meta */
   /* product actions */
 }
@@ -105,19 +111,23 @@
   display: block;
 }
 .product--title {
-  color: black;
+  color: #444;
   font-size: 1rem;
+  font-weight: 600;
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 .product--price {
+  font-size: 1rem;
+  font-weight: 600;
+  font-style: italic;
   color: black;
   margin-bottom: 0.2rem;
 }
 .product--price del {
-  color: grey;
+  color: #bbb;
 }
 .product--price ins {
   color: red;
@@ -142,36 +152,28 @@
   background-color: #96D6FF;
 }
 .product--add-to-cart {
-  border-color: white;
-  color: white;
-  background-color: #96D6FF;
-  text-align: center;
+  display: block;
+  background: #fdce30;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 4px;
+  opacity: 1;
+  position: absolute;
+  bottom: 4px;
+  width: 100%;
+  border: solid 1px;
+}
+.product--add-to-cart:hover {
+  color: #000;
 }
 
-.productcard {
-  max-width: 300px;
-  overflow: hidden;
+/* #WIDGET-PRODUCT */
+.widget-product__price del {
+  color: #bbb;
 }
-.productcard--header {
-  position: relative;
-  overflow: hidden;
-}
-.productcard--header::before {
-  content: "";
-  display: block;
-  padding-top: 100%;
-}
-.productcard--header .product--thumbnail {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  object-fit: cover;
-}
-.productcard--content {
-  text-align: center;
+.widget-product__price ins {
+  text-decoration: none;
 }
 
 .entry-summary .product--price bdi {
@@ -187,6 +189,7 @@
   text-decoration: none;
 }
 
+/* #PRODUCT-RATING */
 .woocommerce .stars a::before {
   color: yellow;
 }
@@ -290,7 +293,6 @@ ul.page-numbers li .page-numbers.current {
 }
 
 /*  end-PAGINATION  */
-/* post_navigation */
 .text-hidden-line {
   overflow: hidden;
   display: -webkit-box;
@@ -386,8 +388,6 @@ ul.page-numbers li .page-numbers.current {
 }
 
 /*  end-Form  */
-/*  WIDGET:  */
-/*  end-WIDGET  */
 #page {
   min-height: 95vh;
 }

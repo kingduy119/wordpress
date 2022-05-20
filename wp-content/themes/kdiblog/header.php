@@ -12,19 +12,10 @@
 </head>
 
 <body>
-    <div id="page" class="pb-4">
-        <header id="page-header">
+    <div id="page">
         <?php 
-            // get_template_part('modules/header/navbar');
-            // get_template_part('modules/header/breadcrumb');
-            // if( is_active_sidebar( 'page-header' ) ) {
-                dynamic_sidebar('page-header');
-            // }
-            
+            if( ! is_active_sidebar( 'page-header' ) ) { dynamic_sidebar('page-header'); }
         ?>
 
-        </header>
-
-        
-        <div id="page-content" class="mb-3">
+        <div id="page-content">
 

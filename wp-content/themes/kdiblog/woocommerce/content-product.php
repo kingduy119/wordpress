@@ -25,7 +25,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 }
 ?>
 <li class="col">
-<div <?php wc_product_class( 'product', $product ); ?>>
+<div <?php wc_product_class( 'product h-100 mb-2', $product ); ?>>
 	<?php
 	/**
 	 * Hook: woocommerce_before_shop_loop_item.
@@ -49,6 +49,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 	 * @hooked woocommerce_template_loop_product_title - 10
 	 */
 	do_action( 'woocommerce_shop_loop_item_title' );
+	
 
 	/**
 	 * Hook: woocommerce_after_shop_loop_item_title.

@@ -21,8 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $product;
 $args = array(
-	// 'class'	=> 'product--add-to-cart',
-	'class'	=> 'btn btn-info text-light',
+	'class'	=> 'product--add-to-cart',
 );
 
 echo apply_filters(

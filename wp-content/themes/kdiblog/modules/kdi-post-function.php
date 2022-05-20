@@ -161,13 +161,6 @@ if( ! function_exists( 'kdi_post_content' ) ) {
     }
 }
 
-// if( ! function_exists( 'kdi_post_taxonomy' ) ) {
-//     function kdi_post_taxonomy() {
-//         echo '<aside class="post-taxonomy mb-2">';
-//             // kdi_post_tags();
-//         echo '</aside>';
-//     }
-// }
 
 if( ! function_exists( 'kdi_post_nav' ) ) {
     function kdi_post_nav() {

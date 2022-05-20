@@ -25,9 +25,9 @@ final class KDI_Post {
             register_sidebar(array(
                 'name'              => 'Page header',
                 'id'                => 'header',
-                'before_sidebar'    => '<div id="page-header">',
-                'after_sidebar'     => '</div>',
-                'before_widget'     => '<div id="%1$s">',
+                'before_sidebar'    => '<header id="page-header">',
+                'after_sidebar'     => '</header>',
+                'before_widget'     => '<div id="%1$s" class="page-header-widget">',
                 'after_widget'      => '</div>',
             ));
     
@@ -35,19 +35,19 @@ final class KDI_Post {
             register_sidebar(array(
                 'name'              => 'Sidebar',
                 'id'                => 'sidebar',
-                'before_sidebar'    => '<div id="page-sidebar">',
+                'before_sidebar'    => '<div id="page-sidebar" class="container">',
                 'after_sidebar'     => '</div>',
-                'before_widget'     => '<div id="%1$s" class="widget">',
+                'before_widget'     => '<div id="%1$s" class="sidebar-wg">',
                 'after_widget'      => '</div>',
             ));
-            // register_sidebar(array(
-            //     'name'              => 'Sidebar product',
-            //     'id'                => 'sidebar-product',
-            //     'before_sidebar'    => '<div id="page-sidebar">',
-            //     'after_sidebar'     => '</div>',
-            //     'before_widget'     => '<div id="%1$s" class="widget">',
-            //     'after_widget'      => '</div>',
-            // ));
+            register_sidebar(array(
+                'name'              => 'Sidebar product',
+                'id'                => 'sidebar-product',
+                'before_sidebar'    => '<div id="page-product-sidebar" class="container">',
+                'after_sidebar'     => '</div>',
+                'before_widget'     => '<div id="%1$s" class="sidebar-product-wg">',
+                'after_widget'      => '</div>',
+            ));
     
             // Footer
             register_sidebar(array(
@@ -58,38 +58,6 @@ final class KDI_Post {
                 'before_widget'     => '<div id="%1$s">',
                 'after_widget'      => '</div>',
             ));
-            // register_sidebar(array(
-            //     'name'              => 'Footer 1',
-            //     'id'                => 'footer-1',
-            //     'before_sidebar'    => '<div id="widget-footer-1" class="col">',
-            //     'after_sidebar'     => '</div>',
-            //     'before_widget'     => '<div id="%1$s" class="wp-widget">',
-            //     'after_widget'      => '</div>',
-            // ));
-            // register_sidebar(array(
-            //     'name'              => 'Footer 2',
-            //     'id'                => 'footer-2',
-            //     'before_sidebar'    => '<div id="widget-footer-2" class="col">',
-            //     'after_sidebar'     => '</div>',
-            //     'before_widget'     => '<div id="%1$s" class="wp-widget">',
-            //     'after_widget'      => '</div>',
-            // ));
-            // register_sidebar(array(
-            //     'name'              => 'Footer 3',
-            //     'id'                => 'footer-3',
-            //     'before_sidebar'    => '<div id="widget-footer-3" class="col">',
-            //     'after_sidebar'     => '</div>',
-            //     'before_widget'     => '<div id="%1$s" class="wp-widget">',
-            //     'after_widget'      => '</div>',
-            // ));
-            // register_sidebar(array(
-            //     'name'              => 'Footer 4',
-            //     'id'                => 'footer-4',
-            //     'before_sidebar'    => '<div id="widget-footer-4" class="col">',
-            //     'after_sidebar'     => '</div>',
-            //     'before_widget'     => '<div id="%1$s" class="wp-widget">',
-            //     'after_widget'      => '</div>',
-            // ));
         }
     }
 
@@ -99,8 +67,9 @@ final class KDI_Post {
                 assets( 'css/reset.css' ),
                 assets( 'css/main.css' ),
                 assets( 'lib/bootstrap-5/dist/css/bootstrap.css' ),
-                'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css', // bootstrap icons
-                'https://fonts.googleapis.com/css2?family=Roboto+Serif:wght@500&display=swap', // google font
+                // 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+                'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css',
+                'https://fonts.googleapis.com/css2?family=Roboto+Serif:wght@500&display=swap',
             );
             foreach( $styles as $key => $link ) {
                 wp_enqueue_style( "kdi-style-{$key}", $link );
@@ -110,6 +79,7 @@ final class KDI_Post {
                 assets('js/main.js'),
                 assets('lib/bootstrap-5/dist/js/bootstrap.js'),
                 // 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
+                // 'https://kit.fontawesome.com/5fe165cba9.js',
             );
             foreach( $scripts as $key => $link ) {
                 wp_enqueue_script( "kdi-script-{$key}", $link );

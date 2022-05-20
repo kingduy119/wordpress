@@ -171,7 +171,6 @@ ul.page-numbers {
 
 #page {
   min-height: 95vh;
-
   // &-header {}
   // &-content {}
   // &-footer {}
@@ -224,34 +223,3 @@ ul.page-numbers {
     
   }
 }
-
-// #list-categories,
-// #list-archives {
-  
-// }
-
-
-// #list-archives,
-// #list-categories {
-//   padding-left: 6px;
-// }
-// #list-archives a,
-// #list-categories a {
-//   color: black;
-//   text-decoration: none;
-//   display: inline-block
-// }
-
-// #list-archives a:after,
-// #list-categories a:after {
-//   display: block;
-//   content: '';
-//   border-bottom: solid 1px blue;
-//   transform: scaleX(0);
-//   transition: transform 250ms ease-in-out;
-// }
-
-// #list-archives a:hover:after,
-// #list-categories a:hover:after {
-//   transform: scaleX(1);
-// }
