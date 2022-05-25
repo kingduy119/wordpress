@@ -18,5 +18,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$per_page	= isset( $per_page ) ? $per_page : wc_get_loop_prop( 'per_page' );
 ?>
-<ul class="products row row-cols-2 row-cols-md-<?php echo esc_attr( wc_get_loop_prop( 'columns' ) ); ?> gx-1">
+<ul 
+	class="products row row-cols-2 row-cols-md-<?php echo esc_attr( wc_get_loop_prop( 'columns' ) ); ?> gx-1" 
+	total="<?php echo esc_attr( $per_page ); ?>"
+>

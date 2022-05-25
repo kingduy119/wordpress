@@ -127,9 +127,16 @@ function products_custoom_open_shortcode() {
     echo '<div class="container">' .
             '<div class="row g-1">' .
                 '<div class="col col-md-12 col-lg-3">';
-                dynamic_sidebar('sidebar-product');
+                dynamic_sidebar('sidebar-product-catalog');
     echo        '</div>'.
-                '<div class="col col-md-12 col-lg-9">';
+                '<div class="col col-md-12 col-lg-9 position-relative">' .
+                '<div id="products-loading" class="position-absolute ratio ratio-1x1" style="z-index: 100;">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>';
 }
 function products_custoom_close_shortcode() {
     echo '</div></div></div>';
@@ -210,80 +217,58 @@ function kdi_load_category() {
 add_action( 'wp_ajax_kdi_load_category', 'kdi_load_category' );
 add_action( 'wp_ajax_noprive_kdi_load_category', 'kdi_load_category' );
 
+function kdi_page_product_cat() {
+    $query_vars                     = json_decode( stripslashes( $_GET['query_vars'] ), true );
+    $query_vars['paged']            = $_GET['paged'];
+    $query_vars['posts_per_page']   = $_GET['per_page'];
 
-function kdi_query_product() {
-    header("Content-Type: application/json", true);
+    // PRODUCT_CAT FILTER
+    if( ! empty( $_GET['category_name'] ) ) {
+        $query_vars['product_cat']      = $_GET['category_name'];
+    }
 
-    $post_in    = $_REQUEST['post_in'];
-    $order      = $_REQUEST['order'];
-
-    $query_args = array(
-        'post_status'   => 'publish',
-        'post_type'     => 'product',
-        'orderby'       => 'date',
-        'product_cat'   => $post_in,
-        'order'         => $order,
-        'meta_query'    => array(),
-    );
-
-    if( isset( $_REQUEST['orderby'] ) ) {
-        switch( $_REQUEST['orderby'] ) {
+    // SORT FILTER
+    if( isset( $_GET['orderby'] ) ) {
+        switch( $_GET['orderby'] ) {
             case 'price':
-                $query_args['meta_key'] = '_price'; // WPCS: slow query ok.
-                $query_args['orderby']  = 'meta_value_num';
+                $query_vars['meta_key'] = '_price'; // WPCS: slow query ok.
+                $query_vars['orderby']  = 'meta_value_num';
                 break;
             case 'rand':
-                $query_args['orderby'] = 'rand';
+                $query_vars['orderby'] = 'rand';
                 break;
             case 'sales':
-                $query_args['meta_key'] = 'total_sales'; // WPCS: slow query ok.
-                $query_args['orderby']  = 'meta_value_num';
+                $query_vars['meta_key'] = 'total_sales'; // WPCS: slow query ok.
+                $query_vars['orderby']  = 'meta_value_num';
                 break;
-            // case 'name':
-            //     $query_args['orderby'] = 'name';
             default:
-                $query_args['orderby'] = 'date';
+                $query_vars['orderby'] = 'date';
         }
     }
-
-    // price
-    if( isset( $_REQUEST['min_price'] ) && isset( $_REQUEST['max_price'] ) ) {
-        $min_price  = absint( $_REQUEST['min_price'] );
-        $max_price  = absint( $_REQUEST['max_price'] );
-        $query_args['meta_query'][] = array(
-            'key'       => '_price',
-            'value'     => array( $min_price, $max_price ),
-            'compare'   => 'BETWEEN',
-            'type'      => 'NUMERIC',
-        );
+    if( isset( $_GET['order'] ) ) {
+        $query_vars['order'] = $_GET['order'];
     }
 
-    $query = new WP_Query( $query_args );
-
-    ob_start();
-    kdi_product_loop( $query );
-    $res = ob_get_clean();
-    
-    wp_send_json( $res );
-    die();
-}
-add_action( 'wp_ajax_kdi_query_product', 'kdi_query_product' );
-add_action( 'wp_ajax_noprive_kdi_query_product', 'kdi_query_product' );
-
-
-function kdi_page_product_cat() {
-    $query_vars = json_decode( stripslashes( $_REQUEST['query_vars'] ), true );
-    $query_vars['paged'] = $_REQUEST['page'];
-    $query_vars['posts_per_page']   = isset( $_REQUEST['per_page'] ) ? $_REQUEST['per_page'] : -1;
+    // PRICE FILTER
+    if( isset( $_GET['min_price'] ) && isset( $_GET['max_price'] ) ) {
+        $min_price  = absint( $_GET['min_price'] );
+        $max_price  = absint( $_GET['max_price'] );
+        $query_vars['meta_query'][] = array(
+            'key'       => '_price',
+            'compare'   => 'BETWEEN',
+            'type'      => 'NUMERIC',
+            'value'     => array( $min_price, $max_price ),
+        );
+    }
 
     $query = new WP_Query( $query_vars );
 
     ob_start();
-    if( ! $query->have_posts() ) {
-        echo '<div>NO CONTENT</div>';
+    if( $query->have_posts() ) {
+        kdi_product_loop( $query );
     }
     else {
-        kdi_product_loop( $query );
+        echo '<div>NO CONTENT</div>';
     }
     $content = ob_get_clean();
 
@@ -301,7 +286,6 @@ function kdi_page_product_cat() {
     wp_send_json( array(
         'content'       => $content,
         'pagination'    => $pagination,
-        'per_page'       => $query_vars,
     ) );
     die();
 }

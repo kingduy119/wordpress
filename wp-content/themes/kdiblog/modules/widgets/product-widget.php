@@ -42,6 +42,11 @@ class KDI_Product_Widget extends KDI_Fields {
                 'type'  => 'checkbox',
                 'label' => __( 'Show hidden products', 'woocommerce' ),
             ),
+            'show_rating'   => array(
+                'std'   => 0,
+                'type'  => 'checkbox',
+                'label' => __( 'Show rating', 'woocommerce' ),
+            ),
             'posts_per_page' => array(
                 'type'  => 'number',
                 'std'   => 6,
@@ -141,11 +146,10 @@ class KDI_Product_Widget extends KDI_Fields {
 
         $query = $this->get_product( $instance );
 
+        $template_args['show_rating'] = isset( $instance['show_rating'] ) ? $instance['show_rating'] : $this->settings['show_rating']['std'];
         $contain['before']  = '<div class="row row-cols-'.$xs.' row-cols-sm-'.$sm.' row-cols-md-'.$md.' g-1">';
         $contain['after']   = '</div>';
-        $template_args = array( 'show_rating' => false );
         
-
         echo $before_widget;
             echo $contain['before'];
             while( $query->have_posts() ) {

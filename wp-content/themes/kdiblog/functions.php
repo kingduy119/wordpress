@@ -22,44 +22,6 @@ if( kdi_woo_is_actived() ) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ACF plugin:
 // function kdi_get_feature_img($post_ID) {
 //     $post_thumbnail_id = get_post_thumbnail_id($post_ID);

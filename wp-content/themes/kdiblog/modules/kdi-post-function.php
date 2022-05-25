@@ -139,9 +139,7 @@ if( ! function_exists( 'kdi_post_header' ) ) {
         <header class="entry-header">  
         <?php 
             do_action('kdi_post_header_before');
-
             kdi_post_part( 'loop/title' );
-
             do_action('kdi_post_header_after');
         ?>
         </header>
@@ -153,9 +151,7 @@ if( ! function_exists( 'kdi_post_content' ) ) {
     function kdi_post_content() {
     ?>
         <div class="entry-content">
-        
         <?php the_content(); ?>
-
         </div>
     <?php
     }

@@ -23,14 +23,6 @@ if( ! class_exists( 'KDI_Product_Filter_Widget' ) ) :
                         'child'    => __( 'Show child category', 'kdi' ),
                     ),
                 ),
-                // 'template' => array(
-                //     'type'      => 'select',
-                //     'std'       => 'default',
-                //     'label'     => __( 'Template', 'kdi' ),
-                //     'options'   => array(
-                //         'default'    => __( 'Default', 'kdi' ),
-                //     ),
-                // ),
                 'orderby'        => array(
                     'type'      => 'select',
                     'std'       =>  'name',
@@ -44,8 +36,8 @@ if( ! class_exists( 'KDI_Product_Filter_Widget' ) ) :
                     'std'       =>  'DESC',
                     'label'     => __( 'Order', 'kdi' ),
                     'options'   => array(
-                        'DESC'  => 'DESC',
-                        'ASC'   => 'ASC',
+                        'DESC'  => 'High to low',
+                        'ASC'   => 'Low to hight',
                     ),
                 ),
             );
@@ -58,7 +50,6 @@ if( ! class_exists( 'KDI_Product_Filter_Widget' ) ) :
 
             $template       = 'modules/categories/default';
             $part           = '';
-            // $template   = isset( $instance['template'] ) ? $instance['template'] : $this->settings['template']['std'];
             $orderby    = isset( $instance['orderby'] ) ? $instance['orderby'] : $this->settings['orderby']['std'];
             $order      = isset( $instance['order'] ) ? $instance['order'] : $this->settings['order']['std'];
             $terms      = isset( $instance['terms'] ) ? $instance['terms'] : $this->settings['terms']['std'];

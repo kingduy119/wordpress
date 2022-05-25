@@ -75,12 +75,6 @@
     text-decoration: none;
     color: #fff;
     font-weight: 600;
-    padding: 4px;
-    opacity: 1;
-
-    position: absolute;
-    bottom: 4px;
-    width: 100%;
     border: solid 1px;
 
     &:hover {
@@ -95,7 +89,10 @@
 
   }
   &__title {
-
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
   &__price {
     del {

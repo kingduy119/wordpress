@@ -19,15 +19,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+$percen = null;
 global $post, $product;
+
 $price_sale = $product->get_sale_price();
     $price_current = intval( $product->get_regular_price() );
     if( $product->is_on_sale() && 0 != $price_current ) {
         $percen =  round( 100 - ( $price_sale / $price_current * 100) );
     }
 
-if ( $product->is_on_sale() ) : 
-	// echo '<span class="product--on-sale">' . $percen . '%</span>';
+if ( $product->is_on_sale() && $percen && $percen > 0 ) : 
 ?>
 	<span class="product--onsale">
 		<span><?php echo esc_html( $percen ); ?>%</span>

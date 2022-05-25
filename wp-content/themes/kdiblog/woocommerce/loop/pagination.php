@@ -32,7 +32,12 @@ if ( $total <= 1 ) { return; }
 		$disable = ( $current == $i ) ? 'disabled' : '';
 		echo '
 		<li class="page-item '.$disable.'">
-			<a class="page-link" href="?product-page='.$i.'" per-page='.$per_page.'>'.$i.'</a>
+			<a
+				class="page-link" 
+				href="?product-page='. $i .'"
+				per_page="'. $per_page .'"
+				paged="'. $i .'"
+			>'.$i.'</a>
 		</li>
 		';
 	}

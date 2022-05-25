@@ -1,12 +1,9 @@
 
-<!-- <div id="page-sidebar" class="container"> -->
-    <?php
-        // echo 'TPYE: ' . get_post_type();
-        // if( 'post' == get_post_type() ) :
-            dynamic_sidebar('sidebar');
-        // elseif( 'product' == get_post_type() ) :
-            // dynamic_sidebar('sidebar-product');
-        // endif;
-    ?>
-<!-- </div> -->
+<?php
+    if( 'product' == get_post_type() ) :
+        dynamic_sidebar('sidebar-product');
+    else :
+        dynamic_sidebar('sidebar');
+    endif;
+?>
 
