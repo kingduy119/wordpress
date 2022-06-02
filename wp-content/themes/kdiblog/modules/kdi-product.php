@@ -7,7 +7,6 @@ class KDI_Product {
     public function __construct() {
         add_action( 'init', array( $this, 'init') );
         add_action( 'widgets_init', array( $this, 'widgets_init' ) );
-        // add_action( 'wp_enqueue_scripts', array( $this, 'load_css_script' ) );
     }
 
     public function init() {

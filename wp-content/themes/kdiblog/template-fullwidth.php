@@ -10,6 +10,6 @@
 get_header();
 ?>
 
-<?php do_action( 'kdi_loop_content' ); ?>
+<?php do_action( 'kdi_content' ); ?>
 
 <?php get_footer(); ?>

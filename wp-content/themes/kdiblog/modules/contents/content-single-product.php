@@ -5,7 +5,7 @@
         /**
          * woocommerce/content-single-product.php
          */
-        the_content(); 
+        the_content();
         ?>
     </div>
 </article>

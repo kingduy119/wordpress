@@ -1,0 +1,39 @@
+
+/* WIDGET--COMMENTS */
+.wp-block-latest-comments {
+    padding-left: 0;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+.wp-block-latest-comments::-webkit-scrollbar {
+    width: 3px
+}
+.wp-block-latest-comments::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.wp-block-latest-comments::-webkit-scrollbar-thumb {
+    background: #aaa;
+}
+.wp-block-latest-comments::-webkit-scrollbar-thumb:hover {
+    background: #000;
+}
+
+.wp-block-latest-comments a {
+    text-decoration: none;
+}
+
+.wp-block-latest-comments .wp-block-latest-comments__comment-author {
+    color: black;
+    font-weight: 600;
+}
+
+.wp-block-latest-comments .wp-block-latest-comments__comment-link {
+    color: #aaa;
+    font-weight: 600;
+}
+
+.wp-block-latest-comments .wp-block-latest-comments__comment-link:hover {
+    color: blue;
+}
+/* END WIDGET--COMMENTS */

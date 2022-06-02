@@ -2,6 +2,13 @@
 jQuery.noConflict();
 jQuery(document).ready(function($) {
 
+    $('#page-sidebar p, #page-footer p').each(function() {
+        if( $(this).text() == '' || $(this).text() == '\t\t' ) {
+            $(this).remove();
+        }
+    });
+    
+
     var loading = $('div#products-loading');
     var product_pagination = $('nav.product--pagination');
     var product_list = $('ul.products');

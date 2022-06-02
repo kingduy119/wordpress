@@ -1,6 +1,4 @@
 <?php
-// namespace kdi;
-
 /**
  * ******************************************
  * KDI WIDGETS
@@ -11,17 +9,12 @@ if( ! class_exists( 'KDI_Widget_Post' ) ) :
     class KDI_Widget_Post extends KDI_Fields {
 
         function __construct() {
-            $this->wg_id            = 'kdi_posts';
+            $this->wg_id            = 'kdi_post_widget';
             $this->wg_name          = __( 'KDI Post', 'kdi' );
-            $this->wg_class         = 'kdi_widget_posts';
-            $this->wg_description   = __( 'Loop post with template', 'kdi' );
+            $this->wg_class         = 'kdi_widget_post';
+            $this->wg_description   = __( 'Post loop', 'kdi' );
 
-            $this->settings         = array(
-                'title'             => array(
-                    'type'  => 'text',
-                    'std'   => '',
-                    'label' => __( 'Title', 'kdi' ),
-                ),
+            $this->settings = array(
                 'posts_per_page'    => array(
                     'type'  => 'number',
                     'std'   => 6,
@@ -29,34 +22,13 @@ if( ! class_exists( 'KDI_Widget_Post' ) ) :
                     'max'   => 30,
                     'label' => __( 'Number of post to show', 'kdi' ),
                 ),
-                'xs'                => array(
-                    'type'  => 'number',
-                    'std'   => 3,
-                    'min'   => 1,
-                    'max'   => 6,
-                    'label' => __( 'Number of post to show on mobile', 'kdi' ),
-                ),
-                'md'                => array(
-                    'type'  => 'number',
-                    'std'   => 3,
-                    'min'   => 1,
-                    'max'   => 6,
-                    'label' => __( 'Number of post to show on tablet', 'kdi' ),
-                ),
-                'lg'                => array(
-                    'type'  => 'number',
-                    'std'   => 3,
-                    'min'   => 1,
-                    'max'   => 6,
-                    'label' => __( 'Number of post to show on desktop', 'kdi' ),
-                ),
                 'oderby'        => array(
                     'type'      => 'select',
                     'std'       =>  'date',
                     'label'     => __( 'Orderby', 'kdi' ),
                     'options'   => array(
-                        'date'  => 'Date',
-                        'name'  => 'Name',
+                        'data'  => 'Date',
+                        'rand'  => 'Random',
                     ),
                 ),
                 'order'        => array(
@@ -64,18 +36,34 @@ if( ! class_exists( 'KDI_Widget_Post' ) ) :
                     'std'       =>  'DESC',
                     'label'     => __( 'Order', 'kdi' ),
                     'options'   => array(
-                        'DESC'  => 'DESC',
-                        'ASC'  => 'ASC',
+                        'DESC'  => 'Hight to low',
+                        'ASC'  => 'Low to hight',
                     ),
                 ),
-                // 'template'          => array(
-                //     'type'      => 'select',
-                //     'std'       => 'modules/product/card',
-                //     'label'     => __( 'Template', 'kdi' ),
-                //     'options'   => array(
-                //         'modules/product/card'  => __( 'Product', 'kdi' ),
-                //     ),
-                // ),
+                'xs' => array(
+                    'style' => 'width: 20%; display: inline-block;',
+                    'type'  => 'number',
+                    'std'   => 3,
+                    'min'   => 1,
+                    'max'   => 6,
+                    'label' => __( 'mobile', 'kdi' ),
+                ),
+                'sm' => array(
+                    'style' => 'width: 20%; display: inline-block;',
+                    'type'  => 'number',
+                    'std'   => 3,
+                    'min'   => 1,
+                    'max'   => 6,
+                    'label' => __( 'tablet', 'kdi' ),
+                ),
+                'md' => array(
+                    'style' => 'width: 20%; display: inline-block;',
+                    'type'  => 'number',
+                    'std'   => 3,
+                    'min'   => 1,
+                    'max'   => 6,
+                    'label' => __( 'desktop', 'kdi' ),
+                ),
             );
             parent::__construct();
         }
@@ -83,36 +71,35 @@ if( ! class_exists( 'KDI_Widget_Post' ) ) :
         // front-end
         public function widget( $args, $instance ) {
             extract( $args );
-            echo $before_widget;
 
-            if( ! empty( $instance['title'] ) ) {
-                echo '<h5 class="post--title">' . $instance['title'] . '</h5>';
-            }
+            $xs         = isset( $instance['xs'] ) ? $instance['xs'] : $this->settings['xs']['std'];
+            $sm         = isset( $instance['sm'] ) ? $instance['sm'] : $this->settings['sm']['std'];
+            $md         = isset( $instance['md'] ) ? $instance['md'] : $this->settings['md']['std'];
 
-            $this->query = new WP_Query( array(
-                'post_type'         => 'post',
+            $contain['before']  = '<div class="row row-cols-'.$xs.' row-cols-sm-'.$sm.' row-cols-md-'.$md.' g-1">';
+            $contain['after']   = '</div>';
+
+            $query = kdi_get_recent_post( array(
                 'post_status'       => 'publish',
-                'posts_per_page'    => intval( $instance['posts_per_page'] ),
-                'oderby'            => strval( $instance['oderby'] ),
-                'order'             => strval( $instance['order'] ),
             ) );
 
-            $echo_container = isset( $instance['container'] ) && isset( $instance['container_close'] );
-            $echo_item = isset( $instance['item'] ) && isset( $instance['item_close'] );
-            
-            if( $echo_container ) { echo $instance['container']; }
-            while( $this->query->have_posts() ) : $this->query->the_post();
+            echo $before_widget;
 
-                if( $echo_item ) { $instance['item']; }
-                get_template_part( $instance['template'], $instance['part'] );
-                if( $echo_item ) { $instance['item_close']; }                
+            // echo '<div class="row row-cols-1 g-1">';
+            echo $contain['before'];
+            kdi_loop_template( array(
+                'query'     => $query,
+                'template'  => 'modules/contents/content-widget-post',
+            ) );
+            echo $contain['after'];
+            // echo '</div>';
 
-            endwhile;
-            
-            if( $echo_container ) { echo $instance['container_close']; }
             echo $after_widget;
         }
 
+        // get_post( $instance ) {
+
+        // }
     }
 endif;
 

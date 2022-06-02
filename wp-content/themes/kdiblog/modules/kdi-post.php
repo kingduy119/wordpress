@@ -73,6 +73,7 @@ final class KDI_Post {
         $styles = array(
             assets( 'css/reset.css' ),
             assets( 'css/main.css' ),
+            assets( 'css/wordpress-custom.css' ),
             assets( 'lib/bootstrap-5/dist/css/bootstrap.css' ),
             'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css',
             'https://fonts.googleapis.com/css2?family=Roboto+Serif:wght@500&display=swap',
@@ -82,7 +83,7 @@ final class KDI_Post {
         }
 
         $scripts = array(
-            assets('js/main.js'),
+            assets('js/main1.js'),
             assets('lib/bootstrap-5/dist/js/bootstrap.js'),
         );
         foreach( $scripts as $key => $link ) {
@@ -102,10 +103,10 @@ final class KDI_Post {
         unregister_widget('WP_Widget_Archives');
         unregister_widget('WP_Widget_Links');
         unregister_widget('WP_Widget_Meta');
-        // unregister_widget('WP_Widget_Search');
+        unregister_widget('WP_Widget_Search');
         unregister_widget('WP_Widget_Categories');
         unregister_widget('WP_Widget_Recent_Posts');
-        unregister_widget('WP_Widget_Recent_Comments');
+        // unregister_widget('WP_Widget_Recent_Comments');
         unregister_widget('WP_Widget_RSS');
         unregister_widget('WP_Widget_Tag_Cloud');
         unregister_widget('WP_Nav_Menu_Widget');

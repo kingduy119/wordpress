@@ -1,7 +1,6 @@
-
-<?php get_header() ?>
-
-<?php do_action( 'kdi_loop_content' ); ?>
-
-<?php get_footer() ?>
+<?php 
+    get_header();
+    do_action( 'kdi_content' );
+    get_footer();
+?>
 

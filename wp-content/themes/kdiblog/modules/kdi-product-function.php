@@ -7,21 +7,9 @@ function kdi_product_loop( $query ) {
     wp_reset_postdata();
 }
 
-if( ! function_exists( 'kdi_wc_thumbnail' ) ) {
-    function kdi_wc_thumbnail() {
-        kdi_product_part( 'loop/thumbnail' );
-    }
-}
-
-if( ! function_exists( 'kdi_wc_title' ) ) {
-    function kdi_wc_title() {
-        kdi_product_part( 'loop/title' );
-    }
-}
-
-if( ! function_exists( 'kdi_wc_price' ) ) {
-    function kdi_wc_price() {
-        kdi_product_part( 'loop/price' );
+if( ! function_exists( 'kdi_wc_template_single_title' ) ) {
+    function kdi_wc_template_single_title() {
+        wc_get_template( 'single-product/title.php' );
     }
 }
 
@@ -31,124 +19,7 @@ if( ! function_exists( 'kdi_wc_comments' ) ) {
     }
 }
 
-if ( ! function_exists( 'kdi_wc_pagination' ) ) {
-	function kdi_wc_pagination() {
-		if ( ! wc_get_loop_prop( 'is_paginated' ) || ! woocommerce_products_will_display() ) {
-			return;
-		}
-
-		$args = array(
-			'total'     => wc_get_loop_prop( 'total_pages' ),
-			'current'   => wc_get_loop_prop( 'current_page' ),
-            'per_page'  => wc_get_loop_prop( 'per_page' ),
-		);
-
-        echo '<nav class="product--pagination">';
-		wc_get_template( 'loop/pagination.php', $args );
-        echo '</nav>';
-	}
-}
-
-// -------------------------------------
-if( ! function_exists( 'kdi_upsell_display' ) ) {
-    function kdi_upsell_display( $limit = '-1', $columns = 4, $orderby = 'rand', $order = 'desc' ) {
-        global $product;
-
-		if ( ! $product ) {
-			return;
-		}
-
-		$args = array(
-            'posts_per_page' => $limit,
-            'orderby'        => $orderby,
-            'order'          => $order,
-            'columns'        => $columns,
-        );
-
-		$order   = isset( $args['order'] ) ? $args['order'] : $order;
-		$orderby = isset( $args['orderby'] ) ? $args['orderby'] : $orderby;
-		$limit   = isset( $args['posts_per_page'] ) ? $args['posts_per_page'] : $limit;
-
-		// Get visible upsells then sort them at random, then limit result set.
-		$upsells = wc_products_array_orderby( array_filter( array_map( 'wc_get_product', $product->get_upsell_ids() ), 'wc_products_array_filter_visible' ), $orderby, $order );
-		$upsells = $limit > 0 ? array_slice( $upsells, 0, $limit ) : $upsells;
-
-        echo '<div class="row row-cols-2 row-cols-sm-4 g-1">';
-        foreach( $upsells as $upsell ) {
-            $post_object = get_post( $upsell->get_id() );
-            setup_postdata( $GLOBALS['post'] =& $post_object ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited, Squiz.PHP.DisallowMultipleAssignments.Found
-            
-            echo '<div class="col">';
-            get_template_part( 'modules/woo/templates/card' );
-            echo '</div>';
-        }
-        echo '</div>';
-
-        wp_reset_postdata();
-    }   
-}
-
-// -------------------------------------
-if( ! function_exists( 'kdi_product_related' ) ) {
-    function kdi_product_related( $args = array() ) {
-
-        global $product;
-        if ( ! $product ) { return; }
-    
-        $product_cats = get_the_terms( get_the_ID(), 'product_cat');
-        $slugs = '';
-        foreach( $product_cats as $cat ){
-            $slugs .= $cat->slug . ',';
-        }
-    
-        $defaults = array(
-            'posts_per_page'    => 4,
-            'columns'           => 4,
-            'orderby'           => 'rand', // @codingStandardsIgnoreLine.
-            'order'             => 'desc',
-            'product_cat'       => $slugs,
-        );
-        $args = wp_parse_args( $args, $defaults );
-        $query = new WP_Query( $args );
-    
-        $template           = 'modules/woo/templates/card';
-        $item['before']     = '<div class="col">';
-        $item['after']      = '</div>';
-        $contain['before']  = '<div class="row row-cols-2 row-cols-sm-4 g-1">';
-        $contain['after']   = '</div>';
-    
-        kdi_post_loop( $query, $template, $item, $contain );
-    }
-}
-
-// -------------------------------------
-
-function products_custoom_open_shortcode() {
-    echo '<div class="container">' .
-            '<div class="row g-1">' .
-                '<div class="col col-md-12 col-lg-3">';
-                dynamic_sidebar('sidebar-product-catalog');
-    echo        '</div>'.
-                '<div class="col col-md-12 col-lg-9 position-relative">' .
-                '<div id="products-loading" class="position-absolute ratio ratio-1x1" style="z-index: 100;">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <div class="spinner-border text-warning" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>';
-}
-function products_custoom_close_shortcode() {
-    echo '</div></div></div>';
-}
-
-function kdi_shop_loop_item_title() {
-    wc_get_template( 'loop/title.php' );
-}
-// -------------------------------------
-
-if ( ! function_exists( 'kdi_custom_product_single_tabs' ) ) {
-	
+if ( ! function_exists( 'kdi_custom_product_single_tabs' ) ) {	
 	function kdi_custom_product_single_tabs( $tabs = array() ) {
 		global $product, $post;
 
@@ -156,8 +27,8 @@ if ( ! function_exists( 'kdi_custom_product_single_tabs' ) ) {
 		if ( $post->post_content ) {
 			$tabs['description'] = array(
 				'title'    => __( 'Description', 'woocommerce' ),
-				'priority' => 10,
 				'callback' => 'woocommerce_product_description_tab',
+				'priority' => 10,
 			);
 		}
 
@@ -179,11 +50,79 @@ if ( ! function_exists( 'kdi_custom_product_single_tabs' ) ) {
                 'callback' => 'kdi_wc_comments',
 			);
 		}
-
 		return $tabs;
 	}
 }
 
+function show_woo_comments() {
+    if ( have_comments() ) : ?>
+        <ol class="commentlist">
+            <?php wp_list_comments( apply_filters( 'woocommerce_product_review_list_args', array( 'callback' => 'woocommerce_comments' ) ) ); ?>
+        </ol>
+        <?php
+        if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) :
+            echo '<nav class="woocommerce-pagination">';
+            paginate_comments_links(
+                apply_filters(
+                    'woocommerce_comment_pagination_args',
+                    array(
+                        'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
+                        'next_text' => is_rtl() ? '&larr;' : '&rarr;',
+                        'type'      => 'list',
+                    )
+                )
+            );
+            echo '</nav>';
+        endif;
+        ?>
+    <?php else : ?>
+        <p class="woocommerce-noreviews"><?php esc_html_e( 'There are no reviews yet.', 'woocommerce' ); ?></p>
+    <?php endif; 
+}
+
+// -------------------------------------
+function kdi_shop_loop_item_title() {
+    wc_get_template( 'loop/title.php' );
+}
+
+function products_custoom_open_shortcode() {
+    echo '<div class="container">' .
+            '<div class="row g-1">' .
+                '<div class="col col-md-12 col-lg-3">';
+                dynamic_sidebar('sidebar-product-catalog');
+    echo        '</div>'.
+                '<div class="col col-md-12 col-lg-9 position-relative">' .
+                '<div id="products-loading" class="position-absolute ratio ratio-1x1" style="z-index: 100;">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>';
+}
+
+function products_custoom_close_shortcode() {
+    echo '</div></div></div>';
+}
+
+if ( ! function_exists( 'kdi_wc_pagination' ) ) {
+	function kdi_wc_pagination() {
+		if ( ! wc_get_loop_prop( 'is_paginated' ) || ! woocommerce_products_will_display() ) {
+			return;
+		}
+
+		$args = array(
+			'total'     => wc_get_loop_prop( 'total_pages' ),
+			'current'   => wc_get_loop_prop( 'current_page' ),
+            'per_page'  => wc_get_loop_prop( 'per_page' ),
+		);
+
+        echo '<nav class="product--pagination">';
+		wc_get_template( 'loop/pagination.php', $args );
+        echo '</nav>';
+	}
+}
+// -------------------------------------
 
 // Ajax
 function kdi_load_category() {

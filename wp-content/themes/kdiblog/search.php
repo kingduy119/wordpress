@@ -10,7 +10,7 @@ get_header() ?>
             </h1>
             
             <?php
-                do_action( 'kdi_loop_content' );
+                do_action( 'kdi_content' );
 
                 the_posts_pagination( array(
                     'type'      => 'list',

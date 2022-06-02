@@ -202,6 +202,18 @@
     color: black; }
 
 /*  end-BREADCRUMB  */
+.entry-navigation .nav-links a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 600; }
+  .entry-navigation .nav-links a:hover {
+    color: #aaa; }
+.entry-navigation .nav-previous {
+  display: inline-block; }
+.entry-navigation .nav-next {
+  display: inline-block;
+  float: right; }
+
 /*  COMMENTS:  */
 .comments a {
   text-decoration: none; }
@@ -337,12 +349,5 @@ ul.page-numbers {
       background-color: #96D6FF; }
       #page-main-navbar #main-menu .sub-menu li:not(:last-child) {
         border-bottom: solid 1px white; }
-
-#home-feature-section .post {
-  border: none; }
-#home-feature-section-right .post {
-  margin-bottom: 1rem; }
-  #home-feature-section-right .post-excerpt {
-    display: none; }
 
 /*# sourceMappingURL=main.css.map */

@@ -6,9 +6,9 @@
         <div class="col-12 col-lg-9">
             <?php
             /**
-             * kdi_loop_content - 5
+             * kdi_get_content - 5
              */
-            do_action( 'kdi_loop_content' );
+            do_action( 'kdi_content' );
             ?>
 
         </div>

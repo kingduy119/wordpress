@@ -8,7 +8,11 @@
     font-family: Arial, Helvetica, sans-serif !important;
 }
 
-/*  BREADCRUMB  */
+/**
+ * ******************************************
+ * BREADCRUMB
+ * ******************************************
+ */
 .breadcrumb-item {
   font-size: 0.8rem;
   
@@ -17,9 +21,37 @@
     color: black;
   }
 }
-/*  end-BREADCRUMB  */
 
-/*  COMMENTS:  */
+/**
+ * ******************************************
+ * SINGLE_POST
+ * ******************************************
+ */
+.entry-navigation {
+  .nav-links {
+    a {
+      color: #000;
+      text-decoration: none;
+      font-weight: 600;
+      &:hover {
+        color: #aaa;
+      }
+    }
+  }
+  .nav-previous {
+    display: inline;
+  }
+  .nav-next {
+    display: inline;
+    float: right;
+  }
+}
+
+/**
+ * ******************************************
+ * COMMENTS
+ * ******************************************
+ */
 .comments {
   a {
     text-decoration: none;
@@ -176,7 +208,6 @@ ul.page-numbers {
   // &-footer {}
 }
 
-
 #page-main-navbar {
   a {
     color: white;
@@ -209,17 +240,4 @@ ul.page-numbers {
   }// #main-menu
 }// #page-main-navbar
 
-#home-feature-section {
-  .post {
-    border: none;
-  }
 
-  &-right .post {
-    margin-bottom: 1rem;
-
-    &-excerpt {
-      display: none;
-    }
-    
-  }
-}
