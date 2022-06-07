@@ -17,3 +17,4 @@ if( kdi_woo_is_actived() ) {
 
 
 
+add_filter( 'big_image_size_threshold', '__return_false' );

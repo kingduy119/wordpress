@@ -191,8 +191,8 @@
     border-right: solid 0.5px #ccc; }
 
 /*  end-TABS  */
-* {
-  font-family: Arial, Helvetica, sans-serif !important; }
+/* * {
+  font-family: Arial, Helvetica, sans-serif !important; } */
 
 /*  BREADCRUMB  */
 .breadcrumb-item {

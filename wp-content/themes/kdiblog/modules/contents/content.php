@@ -1,11 +1,14 @@
 
 <div class="col">
     <div class="card h-100" id="post-<?php the_ID(); ?>">
-        <a href="<?php echo esc_attr( get_permalink() ); ?>" class="text-black text-decoration-none">
-        <?php
-            get_template_part( 'modules/loop/thumbnail' );
-        ?>
-        </a>
+        
+        <div class="post--thumbnail ratio ratio-4x3 overflow-hidden">
+            <a href="<?php echo esc_attr( get_permalink() ); ?>" class="text-black text-decoration-none">
+            <?php
+                get_template_part( 'modules/loop/thumbnail' );
+            ?>
+            </a>
+        </div>
 
         <div class="card-body px-3 py-1">
         <?php

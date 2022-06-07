@@ -17,5 +17,5 @@
             if( ! is_active_sidebar( 'page-header' ) ) { dynamic_sidebar('page-header'); }
         ?>
 
-        <div id="page-content">
+        <div id="page-content" style="margin-top: 10vh;">
 

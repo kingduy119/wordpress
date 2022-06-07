@@ -2,8 +2,6 @@
 
 if( ! class_exists( 'KDI_Shortcode' ) ) {
     class KDI_Shortcode {
-        private $query;
-        
         function __construct() {
             $this->init();
         }
@@ -76,6 +74,7 @@ if( ! class_exists( 'KDI_Shortcode' ) ) {
             </div>
             <?php  wp_reset_postdata();
         }
+
         public static function archives() {
             ?>
             <div class="widget">
@@ -85,6 +84,7 @@ if( ! class_exists( 'KDI_Shortcode' ) ) {
             </div>
             <?php wp_reset_postdata();
         }
+        
         public static function tags() {
             $tags = get_tags();
             $html = '<div class="widget">';

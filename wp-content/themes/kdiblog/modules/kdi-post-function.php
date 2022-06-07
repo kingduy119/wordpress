@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ******************************************
  * HELPER FUNCTION
@@ -38,7 +37,6 @@ function kdi_get_postviews() {
  * DEFINE
  * ******************************************
  */
-
 if ( ! function_exists( 'kdi_woo_is_actived' ) ) {
 	/**
 	 * Query WooCommerce activation
@@ -54,7 +52,6 @@ if ( ! function_exists( 'kdi_woo_cart_actived' ) ) {
         return $woo instanceof \WooCommerce && $woo->cart instanceof \WC_Cart;
     }
 }
-
 
 /**
  * ******************************************
@@ -81,23 +78,15 @@ function kdi_get_recent_post( $args ) {
     return new WP_Query( $parsed_args );
 }
 
-function kdi_get_newest_post( $args ) {
-    $defaults = array(
-        'posts_per_page'    => 6,
-        'post_type'         => 'post',
-        'post_status'       => 'publish',
-    );
-    $parsed_args = wp_parse_args( $args, $defaults );
-
-    return new WP_Query( $parsed_args );
-}
-
 if( ! function_exists( 'kdi_loop_template' ) ) {
     function kdi_loop_template( $args = array() ) {
         $query          = isset( $args['query'] ) ? $args['query'] : null;
         $template       = isset( $args['template'] ) ? $args['template'] : '';
         $template_args  = isset( $args['args'] ) ? $args['args'] : array();
+        $loop_before    = isset( $args['loop_before'] ) ? $args['loop_before'] : '';
+        $loop_after     = isset( $args['loop_after'] ) ? $args['loop_after'] : '';
 
+        echo $loop_before;
         if( $query->have_posts() ) {
             while( $query->have_posts() ) {
                 $query->the_post();
@@ -105,6 +94,7 @@ if( ! function_exists( 'kdi_loop_template' ) ) {
             }
             wp_reset_postdata();
         }
+        echo $loop_after;
     }
 }
 
@@ -223,7 +213,7 @@ if( ! function_exists( 'kdi_post_single_related' ) ) {
             'orderby'     => 'rand',
             'tag__in'     => $tag_ids,
             'cat'         => $this_cat,
-            'exclude'     => $post->ID
+            'exclude'     => $post->ID,
         );
         $related_posts = new WP_Query($args);
 

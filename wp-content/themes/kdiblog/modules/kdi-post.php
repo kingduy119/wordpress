@@ -25,7 +25,7 @@ final class KDI_Post {
             register_sidebar(array(
                 'name'              => 'Page header',
                 'id'                => 'header',
-                'before_sidebar'    => '<header id="page-header">',
+                'before_sidebar'    => '<header id="page-header" class="fixed-top bg-light">',
                 'after_sidebar'     => '</header>',
                 'before_widget'     => '<div id="%1$s" class="page-header-widget">',
                 'after_widget'      => '</div>',
