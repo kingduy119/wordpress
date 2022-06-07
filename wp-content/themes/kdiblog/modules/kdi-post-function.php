@@ -58,8 +58,8 @@ if ( ! function_exists( 'kdi_woo_cart_actived' ) ) {
  * POST FUNCTION
  * ******************************************
  */
-function kdi_get_recent_post( $args ) {
-    $defaults = array(
+function kdi_get_recent_post_args() {
+    return array(
         'numberposts'      => 10,
         'offset'           => 0,
         'category'         => 0,
@@ -71,11 +71,8 @@ function kdi_get_recent_post( $args ) {
         'meta_value'       => '',
         'post_type'        => 'post',
         'post_status'      => 'draft, publish, future, pending, private',
-        'suppress_filters' => true,
+        'suppress_filters' => true,  
     );
-    $parsed_args = wp_parse_args( $args, $defaults );
-
-    return new WP_Query( $parsed_args );
 }
 
 if( ! function_exists( 'kdi_loop_template' ) ) {

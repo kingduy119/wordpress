@@ -180,17 +180,15 @@ if( ! class_exists( 'KDI_Widget_Post' ) ) :
             switch( $post_display ) {
                 case 'feature':
                     $query_args['meta_query'] = array( 'key' => 'featured', 'value' => 1 );
-                    $query = new WP_Query( $query_args );
                     break;
                 case 'recent':
-                    $query = kdi_get_recent_post( $query_args );
+                    $query = wp_parse_args( $query, kdi_get_recent_post_args() );
                     break;
                 default:
-                    $query = new WP_Query( $query_args );
                     break;
             }
 
-            return $query;
+            return new WP_Query( $query_args );
         }
     }
 endif;
