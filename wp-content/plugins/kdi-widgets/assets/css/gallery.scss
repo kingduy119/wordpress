@@ -1,0 +1,28 @@
+.gallery {
+    padding: 1%;
+    display: grid;
+    grid-template-columns: repeat(12, 28%);
+    grid-template-rows: 1fr;
+    column-gap: 1%;
+    row-gap: 1rem;
+    overflow: scroll;
+    height: 60vh;
+    scroll-snap-type: both mandatory;
+    scroll-padding: 1rem;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .active {
+        scroll-snap-type: unset;
+    }
+
+    li {
+        scroll-snap-align: center;
+        display: inline-block;
+        border-radius: 3px;
+        font-size: 0;
+    }
+}
+
