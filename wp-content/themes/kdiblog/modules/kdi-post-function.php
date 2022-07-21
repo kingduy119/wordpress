@@ -38,9 +38,6 @@ function kdi_get_postviews() {
  * ******************************************
  */
 if ( ! function_exists( 'kdi_woo_is_actived' ) ) {
-	/**
-	 * Query WooCommerce activation
-	 */
 	function kdi_woo_is_actived() {
 		return class_exists( 'WooCommerce' ) ? true : false;
 	}
@@ -71,7 +68,8 @@ function kdi_get_recent_post_args() {
         'meta_value'       => '',
         'post_type'        => 'post',
         'post_status'      => 'draft, publish, future, pending, private',
-        'suppress_filters' => true,  
+        // 'post_status'      => 'publish',
+        'suppress_filters' => true,
     );
 }
 
@@ -79,7 +77,7 @@ if( ! function_exists( 'kdi_loop_template' ) ) {
     function kdi_loop_template( $args = array() ) {
         $query          = isset( $args['query'] ) ? $args['query'] : null;
         $template       = isset( $args['template'] ) ? $args['template'] : '';
-        $template_args  = isset( $args['args'] ) ? $args['args'] : array();
+        $template_args  = isset( $args['template_args'] ) ? $args['template_args'] : array();
         $loop_before    = isset( $args['loop_before'] ) ? $args['loop_before'] : '';
         $loop_after     = isset( $args['loop_after'] ) ? $args['loop_after'] : '';
 
@@ -163,6 +161,7 @@ if( ! function_exists( 'kdi_post_single_meta' ) ) {
             
         </div>
         <?php
+        kdi_set_postview();
     }
 }
 
@@ -191,12 +190,13 @@ if( ! function_exists( 'kdi_post_single_related' ) ) {
     function kdi_post_single_related() {
         global $post;
         $tag_ids = array();
-        $current_cat = get_the_category($post->ID);
-        $current_cat = $current_cat[0]->cat_ID;
         $this_cat = '';
-        $tags = get_the_tags($post->ID);
+        $current_cat = get_the_category( $post->ID );
+        $current_cat = $current_cat[0]->cat_ID;
+        $tags = get_the_tags( $post->ID );
+
         if ($tags) {
-            foreach ($tags as $tag) {
+            foreach( $tags as $tag ) {
                 $tag_ids[] = $tag->term_id;
             }
         } else {
@@ -212,14 +212,14 @@ if( ! function_exists( 'kdi_post_single_related' ) ) {
             'cat'         => $this_cat,
             'exclude'     => $post->ID,
         );
-        $related_posts = new WP_Query($args);
+        $related_posts = new WP_Query( $args );
 
-        if (empty($related_posts)) {
+        if ( empty($related_posts) ) {
             $args['tag__in'] = '';
             $args['cat'] = $current_cat;
-            $related_posts = new WP_Query($args);
+            $related_posts = new WP_Query( $args );
         }
-        if (empty($related_posts)) {
+        if ( empty( $related_posts ) ) {
             return;
         }
 

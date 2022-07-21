@@ -73,6 +73,7 @@ final class KDI_Post {
         $styles = array(
             assets( 'css/reset.css' ),
             assets( 'css/main.css' ),
+            assets( 'css/templates/card-overlay.css' ),
             assets( 'css/wordpress-custom.css' ),
             assets( 'lib/bootstrap-5/dist/css/bootstrap.css' ),
             'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css',

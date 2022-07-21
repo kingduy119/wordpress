@@ -9,7 +9,7 @@
 
 get_header('landing');
 
-do_action( 'kdi_content' );
+the_content();
 
 get_footer('landing');
 ?>

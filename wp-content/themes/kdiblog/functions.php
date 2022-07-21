@@ -1,7 +1,5 @@
 <?php
 
-
-
 require_once dirname( __FILE__ ) . '/modules/kdi-post.php';
 require_once dirname( __FILE__ ) . '/modules/kdi-post-hook.php';
 require_once dirname( __FILE__ ) . '/modules/kdi-post-function.php';
@@ -17,4 +15,4 @@ if( kdi_woo_is_actived() ) {
 
 
 
-add_filter( 'big_image_size_threshold', '__return_false' );
+// add_filter( 'big_image_size_threshold', '__return_false' );

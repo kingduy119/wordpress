@@ -8,10 +8,8 @@ if( ! class_exists( 'KDI_Shortcode' ) ) {
 
         public static function init() {
             $shortcodes = array(
-                'categories'            => __CLASS__ . '::categories',
-                'archives'              => __CLASS__ . '::archives',
-                'tabs_link'             => __CLASS__ . '::tabs_link',
-                'recents'               => __CLASS__ . '::recents',
+                // 'categories'            => __CLASS__ . '::categories',
+                // 'archives'              => __CLASS__ . '::archives',
                 'tabs_link'             => __CLASS__ . '::tabs_link',
 
                 'products_cat'          => __CLASS__ . '::filter_products_by_category',
