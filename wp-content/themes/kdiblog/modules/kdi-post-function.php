@@ -37,11 +37,11 @@ function kdi_get_postviews() {
  * DEFINE
  * ******************************************
  */
-if ( ! function_exists( 'kdi_woo_is_actived' ) ) {
-	function kdi_woo_is_actived() {
-		return class_exists( 'WooCommerce' ) ? true : false;
-	}
-}
+// if ( ! function_exists( 'kdi_woo_is_actived' ) ) {
+// 	function kdi_woo_is_actived() {
+// 		return class_exists( 'WooCommerce' ) ? true : false;
+// 	}
+// }
 
 if ( ! function_exists( 'kdi_woo_cart_actived' ) ) {
     function kdi_woo_cart_actived() {

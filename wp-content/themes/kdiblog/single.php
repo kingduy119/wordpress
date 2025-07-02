@@ -8,7 +8,8 @@
             /**
              * kdi_get_content - 5
              */
-            do_action( 'kdi_content' );
+            // do_action( 'kdi_content' );
+            get_template_part('modules/contents/content-single')
             ?>
 
         </div>

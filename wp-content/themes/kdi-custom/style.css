@@ -1,0 +1,46 @@
+/*
+Theme Name: KDISeaDev
+Theme URI: http://underscores.me/
+Author: Ethan D.Nguyen
+Author URI: https://ethan.dnguyen.com
+Description: KDISeaDev Custom Theme
+Version: 1.0.0
+Tested up to: 5.4
+Requires PHP: 5.6
+License: GNU General Public License v2 or later
+License URI: LICENSE
+Text Domain: kdiseadev
+Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-comments, translation-ready
+*/
+
+.product-onsale {
+  top: 0.5rem;         /* cách top một chút */
+  right: 10%;          /* cách phải 10% */
+  background-color: #dc3545; /* màu đỏ */
+  color: #fff;
+  padding: 0.4em 0.8em;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  font-size: 0.85rem;
+  z-index: 10;
+}
+
+
+.single-product .price {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #dc3545; /* đỏ */
+}
+
+.single-product .price del {
+  color: #999;
+  font-size: 1rem;
+  margin-right: 0.5em;
+  text-decoration: line-through;
+}
+
+.single-product .price ins {
+  text-decoration: none;
+  color: #28a745; /* xanh lá */
+  font-size: 1.5rem;
+}

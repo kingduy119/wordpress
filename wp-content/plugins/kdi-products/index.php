@@ -1,41 +1,43 @@
 <?php
-/**
- * Plugin Name: KDI Widgets
- * Plugin URI: 
- * Description: Plugin for KDI
- * Version: 1.0
- * Author: Duy Hoang
- * Author URI:
- * License: later
- */
+/*
+Plugin Name: KDI Products
+Description: Widget hiển thị danh sách sản phẩm từ WooCommerce
+Version: 1.0
+Author: Duy Hoang
+*/
 
-if( ! defined( 'KDI_WG_DIR_PATH' ) ) {
-    define( 'KDI_WG_DIR_PATH', plugin_dir_path( __FILE__ ) );
+// Hàm kiểm tra Elementor preview
+function is_elementor_preview() {
+    return isset($_GET['elementor-preview']) || isset($_GET['action']) && $_GET['action'] === 'elementor';
 }
-
-function kdi_get_template_part( $file = '', $args = array() ) {
-    extract( $args );
-    include KDI_WG_DIR_PATH . $file;
+// Chèn Bootstrap CSS & JS từ CDN
+function my_widget_enqueue_bootstrap() {
+    // Load trong frontend hoặc khi preview Elementor
+    if ( !is_admin() || is_elementor_preview() ) {
+        wp_enqueue_style(
+            'bootstrap-css',
+            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'
+        );
+        wp_enqueue_script(
+            'bootstrap-js',
+            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
+            [],
+            null,
+            true
+        );
+    }
 }
+add_action('wp_enqueue_scripts', 'my_widget_enqueue_bootstrap');
 
-// ############################################
-require_once plugin_dir_path( __FILE__ ) . 'includes/abstract/class-wg-field.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-wg-slider.php';
+// if( class_exists( 'WooCommerce' )) {
+require_once plugin_dir_path(__FILE__) . 'classes/field-base.php';
+require_once plugin_dir_path(__FILE__) . 'classes/product-list.php';
 
-function wg_load_css() {
-    wp_enqueue_style( 'kdi-plugin', plugins_url( 'assets/css/style.css', __FILE__ ) );
-    
-    wp_enqueue_script( 'kdi-slider', plugins_url( 'assets/js/slider1.js', __FILE__ ), array('jquery'), '1.1' );
-    wp_enqueue_script( 'kdi-carousel', plugins_url( 'assets/js/carousel.js', __FILE__ ), '', '1.1' );
-    wp_enqueue_script( 'kdi-gallery', plugins_url( 'assets/js/gallery.js', __FILE__ ), '', '1.1' );
-}
-
-add_action( 'wp_enqueue_scripts', 'wg_load_css' );
-add_action( 'widgets_init', function() {
-    register_widget('KDI_WG_Slider');
-} );
-
-
+// Đăng ký widget
+add_action('widgets_init', function () {
+    register_widget('Product_List_WG');
+});
+// }
 
 // #############################################
 // Woocommerce Support

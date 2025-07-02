@@ -4,7 +4,7 @@
  *
  * @package KDI_Widgets
  */
-abstract class FieldBase extends WP_Widget {
+class FieldBase_WG extends WP_Widget {
     public $wg_id;
     public $wg_name;
     public $wg_class;
@@ -19,7 +19,11 @@ abstract class FieldBase extends WP_Widget {
             'show_instance_in_rest'       => true,
         );
 
-        parent::__construct( $this->wg_id, $this->wg_name, $wg_ops );
+        parent::__construct( 
+            $this->wg_id, 
+            $this->wg_name,
+            $wg_ops
+        );
     }
 
     public function form( $instance ) {
@@ -63,38 +67,38 @@ abstract class FieldBase extends WP_Widget {
     public function update( $new_instance, $old_instance ) {
         $instance = $old_instance;
 
-		if ( empty( $this->settings ) ) {
-			return $instance;
-		}
+        if ( empty( $this->settings ) ) {
+            return $instance;
+        }
 
         // Loop settings and get values to save.
-		foreach ( $this->settings as $key => $setting ) {
-			if ( ! isset( $setting['type'] ) ) {
-				continue;
-			}
+        foreach ( $this->settings as $key => $setting ) {
+            if ( ! isset( $setting['type'] ) ) {
+                continue;
+            }
 
             // Format the value based on settings type.
-			switch ( $setting['type'] ) {
+            switch ( $setting['type'] ) {
                 case 'number':
-					$instance[ $key ] = absint( $new_instance[ $key ] );
+                    $instance[ $key ] = absint( $new_instance[ $key ] );
 
-					if ( isset( $setting['min'] ) && '' !== $setting['min'] ) {
-						$instance[ $key ] = max( $instance[ $key ], $setting['min'] );
-					}
+                    if ( isset( $setting['min'] ) && '' !== $setting['min'] ) {
+                        $instance[ $key ] = max( $instance[ $key ], $setting['min'] );
+                    }
 
-					if ( isset( $setting['max'] ) && '' !== $setting['max'] ) {
-						$instance[ $key ] = min( $instance[ $key ], $setting['max'] );
-					}
-					break;
-				case 'textarea':
-					$instance[ $key ] = wp_kses( trim( wp_unslash( $new_instance[ $key ] ) ), wp_kses_allowed_html( 'post' ) );
-					break;
-				case 'checkbox':
-					$instance[ $key ] = empty( $new_instance[ $key ] ) ? 0 : 1;
-					break;
-				default:
-					$instance[ $key ] = isset( $new_instance[ $key ] ) ? sanitize_text_field( $new_instance[ $key ] ) : $setting['std'];
-					break;
+                    if ( isset( $setting['max'] ) && '' !== $setting['max'] ) {
+                        $instance[ $key ] = min( $instance[ $key ], $setting['max'] );
+                    }
+                    break;
+                case 'textarea':
+                    $instance[ $key ] = wp_kses( trim( wp_unslash( $new_instance[ $key ] ) ), wp_kses_allowed_html( 'post' ) );
+                    break;
+                case 'checkbox':
+                    $instance[ $key ] = empty( $new_instance[ $key ] ) ? 0 : 1;
+                    break;
+                default:
+                    $instance[ $key ] = isset( $new_instance[ $key ] ) ? sanitize_text_field( $new_instance[ $key ] ) : $setting['std'];
+                    break;
             }
         }
 
@@ -103,20 +107,20 @@ abstract class FieldBase extends WP_Widget {
     }
 
     public function flush_widget_cache() {
-		foreach ( array( 'https', 'http' ) as $scheme ) {
-			wp_cache_delete( $this->get_widget_id_for_cache( $this->wg_id, $scheme ), 'widget' );
-		}
-	}
+        foreach ( array( 'https', 'http' ) as $scheme ) {
+            wp_cache_delete( $this->get_widget_id_for_cache( $this->wg_id, $scheme ), 'widget' );
+        }
+    }
 
     protected function get_widget_id_for_cache( $wg_id, $scheme = '' ) {
-		if ( $scheme ) {
-			$wg_id_for_cache = $wg_id . '-' . $scheme;
-		} else {
-			$wg_id_for_cache = $wg_id . '-' . ( is_ssl() ? 'https' : 'http' );
-		}
+        if ( $scheme ) {
+            $wg_id_for_cache = $wg_id . '-' . $scheme;
+        } else {
+            $wg_id_for_cache = $wg_id . '-' . ( is_ssl() ? 'https' : 'http' );
+        }
 
-		return $wg_id_for_cache;
-	}
+        return $wg_id_for_cache;
+    }
 
     /************************************
      * Fields:
@@ -184,7 +188,7 @@ abstract class FieldBase extends WP_Widget {
         <?php
     }
 }
-// endif;
+
 ?>
 
 
