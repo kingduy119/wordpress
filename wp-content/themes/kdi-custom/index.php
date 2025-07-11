@@ -1,7 +1,6 @@
 <?php get_header(); ?>
 
 <div class="container">
-    <h2>INDEX</h2>
     <div class="row">
         <div class="col-9">
             <?php get_template_part('template-parts/content-home'); ?>

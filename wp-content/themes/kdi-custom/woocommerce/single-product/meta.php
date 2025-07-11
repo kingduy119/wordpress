@@ -25,7 +25,6 @@ global $product;
 ?>
 <div class="product_meta">
 
-	<?php do_action( 'woocommerce_product_meta_start' ); ?>
 
 	<?php if ( wc_product_sku_enabled() && ( $product->get_sku() || $product->is_type( 'variable' ) ) ) : ?>
 		<div class="mb-2">
@@ -38,7 +37,7 @@ global $product;
 	$product_cats = wp_get_post_terms( $product->get_id(), 'product_cat' );
 	if ( ! empty( $product_cats ) ) : ?>
 		<div class="mb-2">
-			<strong class="me-2"><?php _e('Danh mục:', 'kdiseadev'); ?></strong>
+			<strong class="me-2"><?php _e('Category:', 'kdiseadev'); ?></strong>
 			<?php foreach ( $product_cats as $cat ) : ?>
 				<a href="<?php echo esc_url( get_term_link( $cat ) ); ?>" class="badge bg-primary text-decoration-none me-1">
 					<?php echo esc_html( $cat->name ); ?>
@@ -60,6 +59,18 @@ global $product;
 		</div>
 	<?php endif; ?>
 
-	<?php do_action( 'woocommerce_product_meta_end' ); ?>
+	<?php
+	$product_brands = wp_get_post_terms( $product->get_id(), 'product_brand' );
+	if ( ! empty( $product_brands ) ) : ?>
+		<div class="mb-2">
+			<strong class="me-2"><?php _e('Brand:', 'kdiseadev'); ?></strong>
+			<?php foreach ( $product_brands as $brand ) : ?>
+				<a href="<?php echo esc_url( get_term_link( $brand ) ); ?>" class="badge bg-warning text-decoration-none me-1">
+					<?php echo esc_html( $brand->name ); ?>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
+
 
 </div>

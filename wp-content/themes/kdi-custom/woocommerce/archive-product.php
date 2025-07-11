@@ -8,7 +8,7 @@ get_header();
   <h1 class="mb-4"><?php woocommerce_page_title(); ?></h1>
 
   <?php if ( woocommerce_product_loop() ) : ?>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
       <?php while ( have_posts() ) : the_post(); ?>
         <div class="col">
           <?php wc_get_template_part( 'content', 'product' ); ?>

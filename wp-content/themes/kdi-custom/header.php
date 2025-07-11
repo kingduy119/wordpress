@@ -7,8 +7,13 @@
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class(); ?>>
-	<div class="container-fluid">
-		<?php get_template_part( 'template-parts/header/navbar' ); ?>
+<body>
+	<div class="page-header">
+	<?php 
+		// get_template_part( 'template-parts/header/navbar' );
+		if( is_active_sidebar( 'header' ) ) { dynamic_sidebar('header'); }
+	?>
 	</div>
 
+	<div class="page-body">
+	<!-- </div> on footer.php -->

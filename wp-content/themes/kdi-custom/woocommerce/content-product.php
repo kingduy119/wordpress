@@ -25,13 +25,30 @@ if ( ! is_a( $product, WC_Product::class ) || ! $product->is_visible() ) {
 }
 ?>
 
-<article <?php wc_product_class( 'card h-100', $product ); ?>>
-  <a href="<?php the_permalink(); ?>">
-    <?php woocommerce_show_product_loop_sale_flash(); ?>
-    <?php woocommerce_template_loop_product_thumbnail(); ?>
-  </a>
-  <div class="card-body">
-    <h5 class="card-title"><?php the_title(); ?></h5>
-    <span class="price"><?php echo $product->get_price_html(); ?></span>
-  </div>
+<article class="product-card card h-100">
+    <a href="<?php the_permalink(); ?>" class="product-card__link text-decoration-none ratio ratio-1x1">
+      <div class="product-card__image-wrapper postiion-relative">
+        <?php woocommerce_show_product_loop_sale_flash(); ?>
+        <?php  echo $product->get_image( 'medium', [ 'class' => 'product-card__image w-100 h-100 object-fit-cover' ] ); ?>
+        </div>
+    </a>
+    <div class="product-card__body card-body">
+      <h5 class="product-card__title card-title fs-5">
+        <?php the_title(); ?>
+      </h5>
+
+      <?php if ( $product->is_on_sale() ) : ?>
+        <span class="product-card__price--regular text-muted text-decoration-line-through me-2 fs-6">
+          <?php echo wc_price( $product->get_regular_price() ); ?>
+        </span>
+        <span class="product-card__price--sale text-danger fw-bold fs-5">
+          <?php echo wc_price( $product->get_sale_price() ); ?>
+        </span>
+      <?php else : ?>
+        <span class="product-card__price text-dark fs-5">
+          <?php echo wc_price( $product->get_regular_price() ); ?>
+        </span>
+      <?php endif; ?>
+    </div>
+
 </article>

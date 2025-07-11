@@ -20,10 +20,8 @@ if (function_exists('register_sidebar')) {
     register_sidebar(array(
         'name'              => 'Page header',
         'id'                => 'header',
-        'before_sidebar'    => '<header id="page-header" class="fixed-top bg-light">',
-        'after_sidebar'     => '</header>',
-        'before_widget'     => '<div id="%1$s" class="page-header-widget">',
-        'after_widget'      => '</div>',
+        'before_widget'     => '',
+        'after_widget'      => '',
     ));
 
     register_sidebar(array(
@@ -54,29 +52,29 @@ if (function_exists('register_sidebar')) {
     register_sidebar(array(
         'name'              => 'Page footer',
         'id'                => 'page-footer',
-        'before_sidebar'    => '<div id="page-footer">',
-        'after_sidebar'     => '</div>',
-        'before_widget'     => '<div id="%1$s">',
-        'after_widget'      => '</div>',
+        'before_widget'     => '',
+        'after_widget'      => '',
     ));
 }
 
 // Chèn Bootstrap CSS & JS từ CDN
 function my_widget_enqueue_bootstrap() {
     wp_enqueue_style('kdiseadev-style', get_stylesheet_uri());
+    $bootstrap_css = get_template_directory_uri() . '/includes/bootstrap-5.3.7/css/bootstrap.min.css';
+    $bootstrap_js  = get_template_directory_uri() . '/includes/bootstrap-5.3.7/js/bootstrap.bundle.min.js';
 
     // Bootstrap CSS
     wp_enqueue_style(
         'bootstrap-css',
-        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css',
+        $bootstrap_css,
         array(),
         null
     );
 
     // Bootstrap Bundle JS (gồm cả Popper)
     wp_enqueue_script(
-        'bootstrap-bundle-js',
-        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js',
+        'bootstrap-js',
+        $bootstrap_js,
         array(),
         null,
         true // load ở footer
