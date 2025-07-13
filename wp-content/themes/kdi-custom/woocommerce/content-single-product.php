@@ -31,37 +31,43 @@ if ( post_password_required() ) {
 	return;
 }
 ?>
-<div id="product-<?php the_ID(); ?>" class="row">
+<div class="single-product" id="product-<?php the_ID(); ?>">
+	<div class="row">
+		<div class="col-md-4 single-product__gallery">
+			<div class="single-product__image">
+			<?php
+				wc_get_template( 'single-product/sale-flash.php' );
+				wc_get_template( 'single-product/product-image.php' );
+			/**
+			 * Hook: woocommerce_before_single_product_summary.
+			 *
+			 * @hooked woocommerce_show_product_sale_flash - 10
+			 * @hooked woocommerce_show_product_images - 20
+			 */
+			// do_action( 'woocommerce_before_single_product_summary' );
+			?>
+			</div>
+		</div>
 
-	<div class="col-md-6 position-relative">
-		<?php
-		/**
-		 * Hook: woocommerce_before_single_product_summary.
-		 *
-		 * @hooked woocommerce_show_product_sale_flash - 10
-		 * @hooked woocommerce_show_product_images - 20
-		 */
-		do_action( 'woocommerce_before_single_product_summary' );
-		?>
-	</div>
-
-	<!-- <div class="summary entry-summary"> -->
-	<div class="col-md-6">
-		<?php
-		/**
-		 * Hook: woocommerce_single_product_summary.
-		 *
-		 * @hooked woocommerce_template_single_title - 5
-		 * @hooked woocommerce_template_single_rating - 10
-		 * @hooked woocommerce_template_single_price - 10
-		 * @hooked woocommerce_template_single_excerpt - 20
-		 * @hooked woocommerce_template_single_add_to_cart - 30
-		 * @hooked woocommerce_template_single_meta - 40
-		 * @hooked woocommerce_template_single_sharing - 50
-		 * @hooked WC_Structured_Data::generate_product_data() - 60
-		 */
-		do_action( 'woocommerce_single_product_summary' );
-		?>
+	
+		<div class="col-md-8 single-product__summary">
+			<?php
+			/**
+			 * Hook: woocommerce_single_product_summary.
+			 *
+			 * @hooked woocommerce_template_single_title - 5
+			 * @hooked woocommerce_template_single_rating - 10
+			 * @hooked woocommerce_template_single_price - 10
+			 * @hooked woocommerce_template_single_excerpt - 20
+			 * @hooked woocommerce_template_single_add_to_cart - 30
+			 * @hooked woocommerce_template_single_meta - 40
+			 * @hooked woocommerce_template_single_sharing - 50
+			 * @hooked WC_Structured_Data::generate_product_data() - 60
+			 */
+			// do_action( 'woocommerce_single_product_summary' );
+				wc_get_template( 'single-product/title.php' );
+			?>
+		</div>
 	</div>
 
 	<?php
@@ -74,6 +80,7 @@ if ( post_password_required() ) {
 	 */
 	do_action( 'woocommerce_after_single_product_summary' );
 	?>
+
 </div>
 
 <?php do_action( 'woocommerce_after_single_product' ); ?>

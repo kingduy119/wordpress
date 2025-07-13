@@ -23,8 +23,13 @@ global $comment;
 $rating = intval( get_comment_meta( $comment->comment_ID, 'rating', true ) );
 
 if ( $rating && wc_review_ratings_enabled() ) {
+	$star_rating = '
+	<div class="star-rating">
+		<span class="stars-fill" style="width:' . ( ( $rating / 5 ) * 100 ) . '%"></span>
+	</div>';
+	echo $star_rating; 
+	
 	// echo wc_get_rating_html( $rating ); // WPCS: XSS ok.
-	$stars_str = str_repeat('★', $rating);
-	echo '<div class="star-rating" role="img" ><span>' . $stars_str . '</span></div>';
-
+	// $stars_str = str_repeat('★', $rating);
+	// echo '<div class="star-rating" role="img" ><span>' . $stars_str . '</span></div>';
 }

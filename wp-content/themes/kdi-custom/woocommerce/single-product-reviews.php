@@ -23,7 +23,6 @@ if ( ! comments_open() ) {
 	return;
 }
 ?>
-
 <div id="reviews" class="woocommerce-Reviews">
 	<div class="woocommerce-Reviews-title mb-4">
 		<h4 class="fw-bold">
@@ -123,70 +122,5 @@ if ( ! comments_open() ) {
 		<p class="woocommerce-verification-required text-muted"><?php esc_html_e( 'Only logged in customers who have purchased this product may leave a review.', 'woocommerce' ); ?></p>
 	<?php endif; ?>
 </div>
-
-<style>
-	.comment_container {
-		display: flex;
-		gap: 1rem;
-		margin-bottom: 1rem;
-	}
-
-	.comment_container .avatar {
-		border-radius: 50%
-	}
-
-	.comment-text {
-		position: relative;
-		border: solid 1px #eaeaea;
-		width: 100%;
-		padding: 1rem;
-	}
-	
-	.star-rating {
-		overflow: hidden;
-		position: absolute;
-		right: 3%;
-		height: 1em;
-		line-height: 1;
-		font-size: 1em;
-		width: 5.4em;
-		overflow-x: hidden;
-		color: #ffc107;
-	}
-	.star-rating::before {
-		content: "★★★★★";
-		opacity: 0.25;
-		position: absolute;
-		left: 0;
-		top: 0;
-		color: #EAEAEA
-	}
-
-	/* Form Review */
-	.custom-rating-stars {
-		direction: rtl;
-		unicode-bidi: bidi-override;
-		font-size: 1.5rem;
-		display: inline-flex;
-	}
-
-	.custom-rating-stars input {
-		display: none;
-	}
-
-	.custom-rating-stars label {
-		color: #ccc;
-		cursor: pointer;
-		transition: color 0.2s;
-	}
-
-	.custom-rating-stars input:checked ~ label,
-	.custom-rating-stars label:hover,
-	.custom-rating-stars label:hover ~ label {
-		color: #ffc107;
-	}
-
-	
-</style>
 
 <!-- <option value="">' . __( 'Rate&hellip;', 'woocommerce' ) . '</option> -->

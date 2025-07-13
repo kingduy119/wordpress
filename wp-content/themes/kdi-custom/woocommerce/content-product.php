@@ -24,9 +24,8 @@ if ( ! is_a( $product, WC_Product::class ) || ! $product->is_visible() ) {
 	return;
 }
 ?>
-
-<article class="product-card card h-100">
-    <a href="<?php the_permalink(); ?>" class="product-card__link text-decoration-none ratio ratio-1x1">
+<article class="card h-100 product-card">
+    <a href="<?php echo get_permalink( $product->get_id() ); ?>" class="product-card__link text-decoration-none ratio ratio-1x1">
       <div class="product-card__image-wrapper postiion-relative">
         <?php woocommerce_show_product_loop_sale_flash(); ?>
         <?php  echo $product->get_image( 'medium', [ 'class' => 'product-card__image w-100 h-100 object-fit-cover' ] ); ?>

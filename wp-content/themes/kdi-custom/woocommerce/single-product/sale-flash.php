@@ -22,15 +22,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $post, $product;
 
 ?>
-<?php if ( $product->is_on_sale() ) : ?>
-
-	<?php echo apply_filters( 
-		'woocommerce_sale_flash', 
-		'<span class="badge product-onsale position-absolute">' . esc_html__( 'Sale!', 'woocommerce' ) . '</span>', 
-		$post, 
-		$product ); ?>
-
-	<?php
-endif;
+<?php 
+	if ( $product->is_on_sale() ) : 
+		$regular_price = (float) $product->get_regular_price();
+		$sale_price    = (float) $product->get_sale_price();
+		$percentage = round( ( ( $regular_price - $sale_price ) / $regular_price ) * 100 );
+		echo '<p class="single-product__summary-sale product-sale">-' . $percentage . '%</p>';
+	endif;
 
 /* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */
