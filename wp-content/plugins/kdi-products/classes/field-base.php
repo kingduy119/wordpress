@@ -4,6 +4,11 @@
  *
  * @package KDI_Widgets
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
+}
+
 class FieldBase_WG extends WP_Widget {
     public $wg_id;
     public $wg_name;
@@ -34,27 +39,27 @@ class FieldBase_WG extends WP_Widget {
         foreach( $this->settings as $key => $setting ) {
             $style = isset( $setting['style'] ) ? $setting['style'] : '';
             $class = isset( $setting['class'] ) ? $setting['class'] : '';
-            $value = $instance[$key] ? $instance[$key] : $setting['std'];
-            
+            $value = $instance[$key] ?? $setting['std'];
+
             switch( $setting['type'] ) {
                 case 'text':
-                    $this->field_text( $setting, $key, $style, $class, $value );
+                    echo $this->field_text( $setting, $key, $style, $class, $value );
                     break;
 
                 case 'number':
-                    $this->field_number( $setting, $key, $style, $class, $value );
+                    echo $this->field_number( $setting, $key, $style, $class, $value );
                     break;
 
                 case 'select':
-                    $this->field_select( $setting, $key, $style, $class, $value );
+                    echo $this->field_select( $setting, $key, $style, $class, $value );
                     break;
 
                 case 'textarea':
-                    $this->field_textarea( $setting, $key, $style, $class, $value );
+                    echo $this->field_textarea( $setting, $key, $style, $class, $value );
                     break;
 
                 case 'checkbox':
-                    $this->field_checkbox( $setting, $key, $style, $class, $value );
+                    echo $this->field_checkbox( $setting, $key, $style, $class, $value );
                     break;
 
                 default:
@@ -126,69 +131,58 @@ class FieldBase_WG extends WP_Widget {
      * Fields:
      ************************************/
     public function field_text( $setting, $key, $style, $class, $value ) {
-        ?>
+        ob_start(); ?>
         <div style="<?php echo $style; ?>">
-            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label><?php // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped ?>
+            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label>
             <input class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" />
         </div>
-        <?php
+        <?php return ob_get_clean();
     }
 
     public function field_select( $setting, $key, $style, $class, $value ) {
-        ?>
+        ob_start(); ?>
         <div style="<?php echo $style; ?>">
-            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
             <select class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>">
                 <?php foreach ( $setting['options'] as $option_key => $option_value ) : ?>
                     <option value="<?php echo esc_attr( $option_key ); ?>" <?php selected( $option_key, $value ); ?>><?php echo esc_html( $option_value ); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
-        <?php
+        <?php return ob_get_clean();
     }
 
     public function field_number( $setting, $key, $style, $class, $value ) {
-        $step = isset( $setting['step'] ) ? $setting['step'] : '';
-        ?>
+        $step = $setting['step'] ?? '';
+        ob_start(); ?>
         <div style="<?php echo $style; ?>">
-            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>">
-                <?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?>
-            </label>
-            <input 
-                class="widefat <?php echo esc_attr( $class ); ?>" 
-                id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" 
-                name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" 
-                type="number" step="<?php echo esc_attr( $step ); ?>" 
-                min="<?php echo esc_attr( $setting['min'] ); ?>" 
-                max="<?php echo esc_attr( $setting['max'] ); ?>" 
-                value="<?php echo esc_attr( $value ); ?>" 
-            />
+            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
+            <input class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="number" step="<?php echo esc_attr( $step ); ?>" min="<?php echo esc_attr( $setting['min'] ); ?>" max="<?php echo esc_attr( $setting['max'] ); ?>" value="<?php echo esc_attr( $value ); ?>" />
         </div>
-        <?php
+        <?php return ob_get_clean();
     }
 
     public function field_textarea( $setting, $key, $style, $class, $value ) {
-        ?>
+        ob_start(); ?>
         <div style="<?php echo $style; ?>">
-            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
             <textarea class="widefat <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" cols="20" rows="3"><?php echo esc_textarea( $value ); ?></textarea>
             <?php if ( isset( $setting['desc'] ) ) : ?>
                 <small><?php echo esc_html( $setting['desc'] ); ?></small>
             <?php endif; ?>
         </div>
-        <?php
+        <?php return ob_get_clean();
     }
 
     public function field_checkbox( $setting, $key, $style, $class, $value ) {
-        ?>
+        ob_start(); ?>
         <div style="<?php echo $style; ?>">
             <input class="checkbox <?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="checkbox" value="1" <?php checked( $value, 1 ); ?> />
-            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+            <label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
         </div>
-        <?php
+        <?php return ob_get_clean();
     }
 }
 
-?>
 
 
