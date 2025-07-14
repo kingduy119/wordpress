@@ -1,10 +1,4 @@
 <?php
-/**
- * Plugin Name: KDI Custom API
- * Description: REST API endpoints for WooCommerce products and categories
- * Version: 1.0
- * Author: Duy Hoang
- */
 
 add_action('rest_api_init', function () {
     // GET /wp-json/kdi/v1/products
@@ -103,6 +97,7 @@ function kdi_get_products(WP_REST_Request $request) {
             'name'     => $product->get_name(),
             'slug'     => $product->get_slug(),
             'price'    => $product->get_price(),
+            'type' => $product->get_type(),
             'image'    => wp_get_attachment_url($product->get_image_id()),
             'category' => wp_get_post_terms($product->get_id(), 'product_cat', ['fields' => 'names']),
             'tags'     => wp_get_post_terms($product->get_id(), 'product_tag', ['fields' => 'names']),

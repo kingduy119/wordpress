@@ -1,10 +1,4 @@
 <?php
-/**
- * Plugin Name: KDI Custom API
- * Description: REST API endpoints for WordPress posts only
- * Version: 1.3
- * Author: Duy Hoang
- */
 
 add_action('rest_api_init', function () {
     // GET /wp-json/kdi/v1/posts

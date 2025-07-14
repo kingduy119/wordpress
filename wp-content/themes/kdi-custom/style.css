@@ -92,20 +92,24 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
   border-radius: 0.5rem;
 }
 
-.single-product__summary .price {
+.single-product__rating {
+  display: flex;
+}
+
+.single-product__summary .single-product__summary--price {
   font-size: 1.6rem;
   font-weight: bold;
   color: var(--color-danger);
 }
 
-.single-product__summary .price del {
+.single-product__summary .single-product__summary--price del {
   color: var(--color-muted);
   font-size: 1rem;
   margin-right: 0.5em;
   text-decoration: line-through;
 }
 
-.single-product__summary .price ins {
+.single-product__summary .single-product__summary--price ins {
   text-decoration: none;
   color: var(--color-text);
   font-size: 1.5rem;

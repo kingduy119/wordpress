@@ -51,6 +51,13 @@ if ( post_password_required() ) {
 
 	
 		<div class="col-md-8 single-product__summary">
+			<div class="border-bottom">
+				<?php
+				wc_get_template( 'single-product/title.php' );
+				wc_get_template( 'single-product/short-description.php' );
+				wc_get_template( 'single-product/rating.php' );
+				?>
+			</div>
 			<?php
 			/**
 			 * Hook: woocommerce_single_product_summary.
@@ -64,8 +71,12 @@ if ( post_password_required() ) {
 			 * @hooked woocommerce_template_single_sharing - 50
 			 * @hooked WC_Structured_Data::generate_product_data() - 60
 			 */
-			// do_action( 'woocommerce_single_product_summary' );
-				wc_get_template( 'single-product/title.php' );
+			// do_action( 'woocommerce_single_product_summary' );				
+				wc_get_template( 'single-product/price.php' );
+				wc_get_template( 'single-product/infor-attribute.php' );
+				// wc_get_template( 'single-product/meta.php' );
+				// wc_get_template( 'single-product/share.php' );
+				// wc_get_template( 'single-product/add-to-cart/simple.php' );
 			?>
 		</div>
 	</div>

@@ -33,19 +33,9 @@ $star_rating = '<div class="star-rating"><span class="stars-fill" style="width:'
 
 if ( $rating_count > 0 ) : ?>
 
-	<div class="woocommerce-product-rating">
-		<?php echo $star_rating; // Hiển thị đánh giá sao ?>
-
-		<?php if ( comments_open() ) : ?>
-			<?php //phpcs:disable ?>
-			<a href="#reviews" class="woocommerce-review-link" rel="nofollow">
-				(<?php 
-					printf( _n( '%s customer review', '%s customer reviews', $review_count, 'woocommerce' ), 
-					'<span class="count">' . esc_html( $review_count ) . '</span>' ); 
-				?>)
-			</a>
-			<?php // phpcs:enable ?>
-		<?php endif ?>
+	<div class="single-product__rating">
+		<?php echo $star_rating . '<span>(' . $review_count .')</span>'; // Hiển thị đánh giá sao ?>
+		
 	</div>
 
 <?php endif; ?>

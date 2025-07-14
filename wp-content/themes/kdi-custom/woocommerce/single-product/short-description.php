@@ -1,8 +1,8 @@
 <?php
 /**
- * Single Product Price
+ * Single product short description
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/single-product/price.php.
+ * This template can be overridden by copying it to yourtheme/woocommerce/single-product/short-description.php.
  *
  * HOWEVER, on occasion WooCommerce will need to update template files and you
  * (the theme developer) will need to copy the new files to your theme to
@@ -12,16 +12,22 @@
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 3.0.0
+ * @version 3.3.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
-global $product;
+global $post;
+
+$short_description = apply_filters( 'woocommerce_short_description', $post->post_excerpt );
+
+if ( ! $short_description ) {
+	return;
+}
 
 ?>
-<p class="single-product__summary--price mb-3">
-	<?php echo $product->get_price_html(); ?>
-</p>
+<div class="woocommerce-product-details__short-description">
+	<?php echo $short_description; // WPCS: XSS ok. ?>
+</div>
