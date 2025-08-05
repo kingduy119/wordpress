@@ -11,7 +11,10 @@ define('API_URL', 'kdi/v1');
 require_once plugin_dir_path(__FILE__) . 'post.php';
 require_once plugin_dir_path(__FILE__) . 'post-list.php';
 require_once plugin_dir_path(__FILE__) . 'post-id.php';
+require_once plugin_dir_path(__FILE__) . 'post-create.php';
+require_once plugin_dir_path(__FILE__) . 'post-create-bulk.php';
 require_once plugin_dir_path(__FILE__) . 'post-category.php';
+
 require_once plugin_dir_path(__FILE__) . 'product.php';
 require_once plugin_dir_path(__FILE__) . 'product-category.php';
 
