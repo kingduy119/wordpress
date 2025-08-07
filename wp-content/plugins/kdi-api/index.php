@@ -8,11 +8,16 @@
  */
 define('API_URL', 'kdi/v1');
 
-require_once plugin_dir_path(__FILE__) . 'post.php';
-require_once plugin_dir_path(__FILE__) . 'post-list.php';
-require_once plugin_dir_path(__FILE__) . 'post-id.php';
+// post
 require_once plugin_dir_path(__FILE__) . 'post-create.php';
-require_once plugin_dir_path(__FILE__) . 'post-create-bulk.php';
+require_once plugin_dir_path(__FILE__) . 'post-get.php';
+require_once plugin_dir_path(__FILE__) . 'post-update.php';
+require_once plugin_dir_path(__FILE__) . 'post-delete.php';
+
+// page
+require_once plugin_dir_path(__FILE__) . 'page-get.php';
+
+// category
 require_once plugin_dir_path(__FILE__) . 'post-category.php';
 
 require_once plugin_dir_path(__FILE__) . 'product.php';
