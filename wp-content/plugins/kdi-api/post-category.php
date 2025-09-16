@@ -9,7 +9,7 @@ add_action('rest_api_init', function () {
 
     register_rest_route('kdi/v1', '/post-categories/(?P<id>\d+)', [
         'methods'  => 'GET',
-        'callback' => 'kdi_get_post_category',
+        'callback' => 'kdi_get_post_cat_by_id',
         'permission_callback' => '__return_true', // Hoặc kiểm tra quyền nếu cần
     ]);
 
@@ -46,24 +46,108 @@ add_action('rest_api_init', function () {
 // ==================== Callback Functions ====================
 
 // GET
-function kdi_get_post_categories()
+function kdi_get_post_categories(WP_REST_Request $request)
 {
-    $categories = get_categories(['hide_empty' => false]);
-    $result = [];
+    // Params & sanitize
+    $param_map = [
+        'per_page'   => 'intval',
+        'page'       => 'intval',
+        'order'      => 'sanitize_text_field',
+        'orderby'    => 'sanitize_text_field',
+        'slug'       => 'sanitize_title',
+        'hide_empty' => fn($v) => filter_var($v, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
+    ];
 
-    foreach ($categories as $cat) {
-        $result[] = [
-            'id'    => $cat->term_id,
-            'name'  => $cat->name,
-            'slug'  => $cat->slug,
-            'count' => $cat->count,
+    $params = [];
+    foreach ($param_map as $key => $sanitize) {
+        if ($request->has_param($key)) {
+            $params[$key] = is_callable($sanitize) ? $sanitize($request[$key]) : $sanitize($request[$key]);
+        }
+    }
+
+    $per_page   = isset($params['per_page']) ? min(max($params['per_page'], 1), 50) : 10;
+    $paged      = isset($params['page']) ? max($params['page'], 1) : 1;
+    $offset     = ($paged - 1) * $per_page;
+    $order      = isset($params['order']) && strtoupper($params['order']) === 'ASC' ? 'ASC' : 'DESC';
+    $orderby    = $params['orderby'] ?? 'id';
+    $slug       = $params['slug'] ?? '';
+    $hide_empty = $params['hide_empty'] ?? false;
+
+    // Cache key (versioned)
+    $cache_key  = 'kdi_cats_v1_' . md5(serialize([$per_page, $paged, $order, $orderby, $slug, $hide_empty]));
+    $cache_group = 'kdi_cats';
+    $cached     = wp_cache_get($cache_key, $cache_group);
+
+    if ($cached !== false) {
+        return rest_ensure_response($cached);
+    }
+
+    // Query
+    $args = [
+        'taxonomy'   => 'category',
+        'number'     => $per_page,
+        'offset'     => $offset,
+        'hide_empty' => $hide_empty,
+        'orderby'    => $orderby,
+        'order'      => $order,
+    ];
+    if ($slug) {
+        $args['slug'] = $slug;
+    }
+
+    $query = new WP_Term_Query($args);
+    $terms = $query->get_terms();
+
+    // Found terms (WP >= 6.0 hỗ trợ $query->found_terms)
+    $total = property_exists($query, 'found_terms') && is_numeric($query->found_terms)
+        ? (int) $query->found_terms
+        : (int) wp_count_terms(['taxonomy' => 'category', 'hide_empty' => $hide_empty]);
+
+    $total_pages = (int) ceil($total / $per_page);
+
+    // Build response
+    $data = [];
+    foreach ($terms as $term) {
+        $link = get_term_link($term);
+        if (is_wp_error($link)) {
+            $link = '';
+        }
+
+        $data[] = [
+            'id'          => $term->term_id,
+            'name'        => $term->name,
+            'slug'        => $term->slug,
+            'description' => $term->description,
+            'count'       => $term->count,
+            'parent'      => $term->parent,
+            'taxonomy'    => $term->taxonomy,
+            'link'        => $link,
+            'rest_url'    => rest_url('wp/v2/categories/' . $term->term_id),
+            'rest_base'   => 'categories',
+            'type'        => 'term',
+            'meta'        => [
+                'thumbnail' => get_term_meta($term->term_id, 'thumbnail', true),
+            ],
         ];
     }
 
-    return rest_ensure_response($result);
+    $response = [
+        'found'        => $total,
+        'total_pages'  => $total_pages,
+        'current_page' => $paged,
+        'has_more'     => $paged < $total_pages,
+        'data'         => $data,
+    ];
+
+    // Cache 5 phút
+    wp_cache_set($cache_key, $response, $cache_group, 300);
+
+    return rest_ensure_response($response);
 }
 
-function kdi_get_post_category(WP_REST_Request $request)
+
+
+function kdi_get_post_cat_by_id(WP_REST_Request $request)
 {
     $term_id = (int) $request['id'];
     $term = get_term($term_id, 'category');
