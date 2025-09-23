@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying product content in the single-product.php template
  *
@@ -15,7 +16,7 @@
  * @version 3.6.0
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 global $product;
 
@@ -24,9 +25,9 @@ global $product;
  *
  * @hooked woocommerce_output_all_notices - 10
  */
-do_action( 'woocommerce_before_single_product' );
+do_action('woocommerce_before_single_product');
 
-if ( post_password_required() ) {
+if (post_password_required()) {
 	echo get_the_password_form(); // WPCS: XSS ok.
 	return;
 }
@@ -35,29 +36,22 @@ if ( post_password_required() ) {
 	<div class="row">
 		<div class="col-md-4 single-product__gallery">
 			<div class="single-product__image">
-			<?php
-				wc_get_template( 'single-product/sale-flash.php' );
-				wc_get_template( 'single-product/product-image.php' );
-			/**
-			 * Hook: woocommerce_before_single_product_summary.
-			 *
-			 * @hooked woocommerce_show_product_sale_flash - 10
-			 * @hooked woocommerce_show_product_images - 20
-			 */
-			// do_action( 'woocommerce_before_single_product_summary' );
-			?>
+				<?php
+				wc_get_template('single-product/sale-flash.php');
+				wc_get_template('single-product/product-image.php');
+				/**
+				 * Hook: woocommerce_before_single_product_summary.
+				 *
+				 * @hooked woocommerce_show_product_sale_flash - 10
+				 * @hooked woocommerce_show_product_images - 20
+				 */
+				// do_action( 'woocommerce_before_single_product_summary' );
+				?>
 			</div>
 		</div>
 
-	
+
 		<div class="col-md-8 single-product__summary">
-			<div class="border-bottom">
-				<?php
-				wc_get_template( 'single-product/title.php' );
-				wc_get_template( 'single-product/short-description.php' );
-				wc_get_template( 'single-product/rating.php' );
-				?>
-			</div>
 			<?php
 			/**
 			 * Hook: woocommerce_single_product_summary.
@@ -72,11 +66,20 @@ if ( post_password_required() ) {
 			 * @hooked WC_Structured_Data::generate_product_data() - 60
 			 */
 			// do_action( 'woocommerce_single_product_summary' );				
-				wc_get_template( 'single-product/price.php' );
-				wc_get_template( 'single-product/infor-attribute.php' );
-				// wc_get_template( 'single-product/meta.php' );
-				// wc_get_template( 'single-product/share.php' );
-				// wc_get_template( 'single-product/add-to-cart/simple.php' );
+			?>
+			<div class="border-bottom">
+				<?php
+				wc_get_template('single-product/title.php');
+				wc_get_template('single-product/short-description.php');
+				wc_get_template('single-product/rating.php');
+				?>
+			</div>
+			<?php
+			wc_get_template('single-product/price.php');
+			wc_get_template('single-product/single-product-add-to-cart.php');
+			wc_get_template('single-product/meta.php');
+			wc_get_template('single-product/share.php');
+			// wc_get_template( 'single-product/add-to-cart/simple.php' );
 			?>
 		</div>
 	</div>
@@ -89,9 +92,9 @@ if ( post_password_required() ) {
 	 * @hooked woocommerce_upsell_display - 15
 	 * @hooked woocommerce_output_related_products - 20
 	 */
-	do_action( 'woocommerce_after_single_product_summary' );
+	do_action('woocommerce_after_single_product_summary');
 	?>
 
 </div>
 
-<?php do_action( 'woocommerce_after_single_product' ); ?>
+<?php do_action('woocommerce_after_single_product'); ?>

@@ -14,6 +14,13 @@ add_action('rest_api_init', function () {
         'callback' => 'kdi_get_posts',
         'permission_callback' => '__return_true',
     ]);
+
+    // GET /wp-json/kdi/v2/posts
+    // register_rest_route(API_URL_V2, '/posts', [
+    //     'methods'  => 'GET',
+    //     'callback' => 'kdi_get_posts_v2',
+    //     'permission_callback' => '__return_true',
+    // ]);
 });
 
 // ID
@@ -137,7 +144,7 @@ function kdi_get_posts(WP_REST_Request $request)
     // Search
     $search = $request->get_param('search');
     if (!is_null($search)) {
-        $args['s'] = esc_sql($search);
+        $args['s'] = esc_sql($search); // giữ ký tự tìm kiếm hợp lệ
     }
 
     // Date query
@@ -156,11 +163,11 @@ function kdi_get_posts(WP_REST_Request $request)
     $sticky = $request->get_param('sticky');
     if (!is_null($sticky)) {
         $sticky_ids = get_option('sticky_posts');
-        if ($sticky === 'only') {
+        if ($sticky) {
             $args['post__in'] = !empty($sticky_ids) ? $sticky_ids : [0];
             $args['ignore_sticky_posts'] = 1;
-        } elseif ($sticky === 'exclude') {
-            $args['post__not_in'] = !empty($sticky_ids) ? $sticky_ids : [0];
+            // } elseif ($sticky === 'exclude') {
+            //     $args['post__not_in'] = !empty($sticky_ids) ? $sticky_ids : [0];
         } else {
             $args['ignore_sticky_posts'] = 0;
         }
@@ -168,7 +175,7 @@ function kdi_get_posts(WP_REST_Request $request)
 
     // ================== Cache ==================
     ksort($args);
-    $cache_key = 'kdi_posts_v2_' . md5(serialize($args));
+    $cache_key = 'kdi_posts_v1_' . md5(serialize($args));
     $cached = wp_cache_get($cache_key, 'kdi_posts');
     if ($cached !== false) {
         return rest_ensure_response($cached);
@@ -188,23 +195,20 @@ function kdi_get_posts(WP_REST_Request $request)
         ]);
     }
 
-    // Preload cache
+    // Preload cache (giảm N+1 queries)
     update_post_caches($post_ids, ['post', 'category', 'tag']);
 
     $posts = array_map(function ($id) {
         $author_id = (int) get_post_field('post_author', $id);
 
-        // ================== Lấy whitelist từ meta ==================
-        $whitelist_str = get_post_meta($id, 'acf_whitelist', true);
-        $acf_fields    = [];
-        if (!empty($whitelist_str)) {
-            $whitelist = array_map('trim', explode(',', $whitelist_str));
+        // ================== Lấy tất cả ACF field có prefix acf_ ==================
+        $raw_meta = get_post_meta($id);
+        $acf_fields = [];
 
-            foreach ($whitelist as $key) {
-                $val = get_post_meta($id, $key, true);
-                if ($val !== '') {
-                    $acf_fields[$key] = maybe_unserialize($val);
-                }
+        foreach ($raw_meta as $key => $val) {
+            if (strpos($key, 'acf_') === 0) {
+                // meta_value luôn là mảng -> lấy phần tử đầu
+                $acf_fields[$key] = is_array($val) && count($val) === 1 ? maybe_unserialize($val[0]) : $val;
             }
         }
 
@@ -241,7 +245,6 @@ function kdi_get_posts(WP_REST_Request $request)
     return rest_ensure_response($response);
 }
 
-
 // ================== Clear cache khi post thay đổi ==================
 add_action('save_post', 'kdi_clear_posts_cache');
 add_action('deleted_post', 'kdi_clear_posts_cache');
@@ -263,3 +266,79 @@ if (!function_exists('wp_cache_flush_group')) {
         }
     }
 }
+
+
+
+// 
+// function kdi_get_posts_v2(WP_REST_Request $request)
+// {
+//     // ================== Params string ==================
+//     $query_string = $_SERVER['QUERY_STRING'] ?? '';
+//     $url = rest_url('wp/v2/posts');
+//     if (!empty($query_string)) {
+//         $url .= '?' . $query_string;
+//     }
+
+//     // ================== Cache key ==================
+//     $cache_key = 'kdi_posts_v2_' . md5($query_string);
+//     $cached = wp_cache_get($cache_key, 'kdi_posts_v2');
+//     if ($cached !== false) {
+//         return rest_ensure_response($cached);
+//     }
+
+//     // ================== Call WP Default API ==================
+//     $response = wp_remote_get($url, ['timeout' => 10]);
+
+//     if (is_wp_error($response)) {
+//         return new WP_Error(
+//             'api_failed',
+//             'Không thể gọi API mặc định',
+//             ['status' => 500]
+//         );
+//     }
+
+//     $body    = wp_remote_retrieve_body($response);
+//     $data    = json_decode($body, true);
+//     $headers = wp_remote_retrieve_headers($response);
+
+//     // ================== Extract pagination ==================
+//     $total       = !empty($headers['x-wp-total']) ? intval($headers['x-wp-total']) : 0;
+//     $total_pages = !empty($headers['x-wp-totalpages']) ? intval($headers['x-wp-totalpages']) : 0;
+//     $paged       = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+
+//     // ================== Custom Response ==================
+//     $custom_response = [
+//         'found'        => $total,
+//         'total_pages'  => $total_pages,
+//         'current_page' => $paged,
+//         'has_more'     => $paged < $total_pages,
+//         'data'         => $data,
+//     ];
+
+//     // ================== Save cache (5 phút) ==================
+//     wp_cache_set($cache_key, $custom_response, 'kdi_posts_v2', 300);
+
+//     return rest_ensure_response($custom_response);
+// }
+
+// // ================== Clear cache khi post thay đổi ==================
+// add_action('save_post', 'kdi_clear_posts_cache_v2');
+// add_action('deleted_post', 'kdi_clear_posts_cache_v2');
+// function kdi_clear_posts_cache_v2()
+// {
+//     wp_cache_flush_group('kdi_posts_v2');
+// }
+
+// // Helper để clear 1 group cache
+// if (!function_exists('wp_cache_flush_group')) {
+//     function wp_cache_flush_group($group)
+//     {
+//         global $wp_object_cache;
+//         if (method_exists($wp_object_cache, 'delete_group')) {
+//             $wp_object_cache->delete_group($group);
+//         } else {
+//             // fallback: flush toàn bộ nếu object cache không hỗ trợ xóa theo group
+//             wp_cache_flush();
+//         }
+//     }
+// }

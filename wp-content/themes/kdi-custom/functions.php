@@ -3,10 +3,10 @@
 require_once get_template_directory() . '/includes/class-bootstrap-navwalker.php';
 
 if (! function_exists('kdiseadev_theme_setup')) {
-    function kdiseadev_theme_setup() {
-        add_theme_support( 'custom-logo');
-        add_theme_support( 'post-thumbnails' );
-
+    function kdiseadev_theme_setup()
+    {
+        add_theme_support('custom-logo');
+        add_theme_support('post-thumbnails');
     }
 }
 add_action('after_setup_theme', 'kdiseadev_theme_setup');
@@ -58,7 +58,8 @@ if (function_exists('register_sidebar')) {
 }
 
 // Chèn Bootstrap CSS & JS từ CDN
-function my_widget_enqueue_bootstrap() {
+function my_widget_enqueue_bootstrap()
+{
     wp_enqueue_style('kdiseadev-style', get_stylesheet_uri());
     $bootstrap_css = get_template_directory_uri() . '/includes/bootstrap-5.3.7/css/bootstrap.min.css';
     $bootstrap_js  = get_template_directory_uri() . '/includes/bootstrap-5.3.7/js/bootstrap.bundle.min.js';
@@ -87,14 +88,10 @@ function my_widget_enqueue_bootstrap() {
         array(),
         '6.5.0'
     );
-    
 }
 add_action('wp_enqueue_scripts', 'my_widget_enqueue_bootstrap');
 
 
-if( class_exists( 'WooCommerce' )) {
+if (class_exists('WooCommerce')) {
     add_theme_support('woocommerce');
 }
-
-
-

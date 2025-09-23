@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Simple product add to cart
  *
@@ -15,36 +16,22 @@
  * @version 7.0.1
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 global $product;
 
-if ( ! $product->is_purchasable() ) {
+if (! $product->is_purchasable()) {
 	return;
 }
 
-echo wc_get_stock_html( $product ); // WPCS: XSS ok.
+echo wc_get_stock_html($product); // WPCS: XSS ok.
 
-if ( $product->is_in_stock() ) : ?>
+if ($product->is_in_stock()) : ?>
 
-	<?php do_action( 'woocommerce_before_add_to_cart_form' ); ?>
+	<?php do_action('woocommerce_before_add_to_cart_form'); ?>
 
-	<form class="cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data'>
-		<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
-		
-		<div class="custom-quantity d-inline-flex align-items-center border rounded overflow-hidden">
-			<button type="button" class="btn btn-outline-secondary btn-minus px-3">−</button>
-			<input
-				type="text"
-				name="quantity"
-				value="1"
-				class="custom-qty-input text-center border-0"
-				min="1"
-				style="width: 60px;"
-			/>
-			<button type="button" class="btn btn-outline-secondary btn-plus px-3">+</button>
-		</div>
-
+	<form class="cart" action="<?php echo esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>" method="post" enctype='multipart/form-data'>
+		<?php do_action('woocommerce_before_add_to_cart_button'); ?>
 		<?php
 		// do_action( 'woocommerce_before_add_to_cart_quantity' );
 
@@ -59,40 +46,52 @@ if ( $product->is_in_stock() ) : ?>
 		// do_action( 'woocommerce_after_add_to_cart_quantity' );
 		?>
 
-		<button 
-			type="submit" 
-			name="add-to-cart" 
-			value="<?php echo esc_attr( $product->get_id() ); ?>" 
-			class="single_add_to_cart_button btn btn-primary"
-			style="min-width: 150px; max-width: 250px;"
-			>
-		<?php echo esc_html( $product->single_add_to_cart_text() ); ?></button>
+		<div class="custom-quantity d-inline-flex align-items-center border rounded overflow-hidden">
+			<button type="button" class="btn btn-outline-secondary btn-minus px-3">−</button>
+			<input
+				type="text"
+				name="quantity"
+				value="1"
+				class="custom-qty-input text-center border-0"
+				min="1"
+				style="width: 60px;" />
+			<button type="button" class="btn btn-outline-secondary btn-plus px-3">+</button>
+		</div>
 
-		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
+
+		<button
+			type="submit"
+			name="add-to-cart"
+			value="<?php echo esc_attr($product->get_id()); ?>"
+			class="single_add_to_cart_button btn btn-primary"
+			style="min-width: 150px; max-width: 250px;">
+			<?php echo esc_html($product->single_add_to_cart_text()); ?></button>
+
+		<?php do_action('woocommerce_after_add_to_cart_button'); ?>
 	</form>
 
-	<?php do_action( 'woocommerce_after_add_to_cart_form' ); ?>
+	<?php do_action('woocommerce_after_add_to_cart_form'); ?>
 
 
-	
+
 
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-		const qtyInput = document.querySelector('.custom-qty-input');
-		const btnPlus = document.querySelector('.btn-plus');
-		const btnMinus = document.querySelector('.btn-minus');
+		document.addEventListener('DOMContentLoaded', function() {
+			const qtyInput = document.querySelector('.custom-qty-input');
+			const btnPlus = document.querySelector('.btn-plus');
+			const btnMinus = document.querySelector('.btn-minus');
 
-		btnPlus.addEventListener('click', () => {
-			let current = parseInt(qtyInput.value) || 1;
-			qtyInput.value = current + 1;
-		});
+			btnPlus.addEventListener('click', () => {
+				let current = parseInt(qtyInput.value) || 1;
+				qtyInput.value = current + 1;
+			});
 
-		btnMinus.addEventListener('click', () => {
-			let current = parseInt(qtyInput.value) || 1;
-			if (current > 1) {
-			qtyInput.value = current - 1;
-			}
-		});
+			btnMinus.addEventListener('click', () => {
+				let current = parseInt(qtyInput.value) || 1;
+				if (current > 1) {
+					qtyInput.value = current - 1;
+				}
+			});
 		});
 	</script>
 

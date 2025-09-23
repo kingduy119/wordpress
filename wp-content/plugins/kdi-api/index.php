@@ -7,6 +7,7 @@
  * Author: Duy Hoang
  */
 define('API_URL', 'kdi/v1');
+define('API_URL_V2', 'kdi/v2');
 
 require_once plugin_dir_path(__FILE__) . 'user.php';
 
@@ -30,6 +31,12 @@ require_once plugin_dir_path(__FILE__) . 'product-category.php';
 // if (function_exists('wp_is_application_passwords_available')) {
 //     add_filter('wp_is_application_passwords_available', '__return_true');
 // }
+
+// Change prefix rest api default
+add_filter('rest_url_prefix', function () {
+    return 'wp-kdi'; // đổi wp-json thành api-kdi
+});
+
 
 
 if (! defined('JWT_AUTH_SECRET_KEY')) {

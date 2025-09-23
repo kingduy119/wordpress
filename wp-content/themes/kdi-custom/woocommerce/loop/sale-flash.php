@@ -27,8 +27,10 @@ global $post, $product;
 	<?php 
 		$regular_price = (float) $product->get_regular_price();
 		$sale_price    = (float) $product->get_sale_price();
-		$percentage = round( ( ( $regular_price - $sale_price ) / $regular_price ) * 100 );
-		echo '<p class="product-card__onsale product-sale">-' . $percentage . '%</p>';
+		if ( $sale_price && $regular_price > 0 ) {
+			$percent = round( ( ( $regular_price - $sale_price ) / $regular_price ) * 100 );
+			echo '<p class="product-card__onsale product-sale">-' . $percent . '%</p>';
+		}
 	?>
 <?php
 endif;

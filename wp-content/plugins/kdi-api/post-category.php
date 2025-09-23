@@ -146,7 +146,6 @@ function kdi_get_post_categories(WP_REST_Request $request)
 }
 
 
-
 function kdi_get_post_cat_by_id(WP_REST_Request $request)
 {
     $term_id = (int) $request['id'];

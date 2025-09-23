@@ -18,26 +18,25 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
    ======================= */
 :root {
   /* 🎯 Màu chính (Xanh dương) */
-  --color-primary: #007bff;         /* Xanh dương tiêu chuẩn Bootstrap */
-  --color-primary-light: #66b3ff;   /* Xanh dương nhạt cho hover */
+  --color-primary: #007bff; /* Xanh dương tiêu chuẩn Bootstrap */
+  --color-primary-light: #66b3ff; /* Xanh dương nhạt cho hover */
 
   /* ❌ Màu cảnh báo / sale */
-  --color-danger: #dc3545;          /* Đỏ cho sale, cảnh báo */
+  --color-danger: #dc3545; /* Đỏ cho sale, cảnh báo */
 
   /* ⭐ Màu rating */
-  --color-gray: #e0e0e0;            /* Màu xám cho sao chưa đánh giá */
-  --color-star: #ffc107;            /* Vàng tươi */
+  --color-gray: #e0e0e0; /* Màu xám cho sao chưa đánh giá */
+  --color-star: #ffc107; /* Vàng tươi */
 
   /* 🖋️ Màu chữ và phụ */
-  --color-text: #212121;            /* Đen nhẹ */
-  --color-muted: #999;              /* Chữ phụ, giá gạch */
+  --color-text: #212121; /* Đen nhẹ */
+  --color-muted: #999; /* Chữ phụ, giá gạch */
 
   /* 🎨 Màu nền / bảng / viền */
-  --color-light: #f8f9fa;           /* Nền sáng */
-  --color-bg: #ffffff;              /* Trắng */
-  --color-border: #eaeaea;          /* Viền mảnh */
+  --color-light: #f8f9fa; /* Nền sáng */
+  --color-bg: #ffffff; /* Trắng */
+  --color-border: #eaeaea; /* Viền mảnh */
 }
-
 
 /* =======================
    📦 LAYOUT
@@ -45,7 +44,6 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
 .page-body {
   min-height: 69vh;
 }
-
 
 /* =======================
    🔥 BADGE SALE
@@ -99,7 +97,7 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
 .single-product__summary .single-product__summary--price {
   font-size: 1.6rem;
   font-weight: bold;
-  color: var(--color-danger);
+  /* color: var(--color-danger); */
 }
 
 .single-product__summary .single-product__summary--price del {
@@ -121,7 +119,6 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
   right: 1.5%;
 }
 
-
 /* =======================
    🖼️ TỶ LỆ ẢNH
    ======================= */
@@ -138,7 +135,6 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
   height: 100%;
   object-fit: contain; /* hoặc cover nếu bạn muốn */
 }
-
 
 /* =======================
    📊 THUỘC TÍNH SẢN PHẨM
@@ -166,7 +162,6 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
   background-color: var(--color-bg);
 }
 
-
 /* =======================
    📝 ĐÁNH GIÁ (REVIEW)
    ======================= */
@@ -192,14 +187,14 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
   font-size: 1.2rem;
   width: 5.4em;
   height: 1em;
-  color: var(--color-gray); 
+  color: var(--color-gray);
 }
 .star-rating::before {
   content: "★★★★★";
   position: absolute;
   top: 0;
   left: 0;
-  color: var(--color-gray); 
+  color: var(--color-gray);
 }
 .stars-fill {
   position: absolute;
@@ -238,7 +233,6 @@ Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-com
 .custom-rating-stars label:hover ~ label {
   color: var(--color-star);
 }
-
 
 /* =======================
    🧩 TABS - NAVIGATION
