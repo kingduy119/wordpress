@@ -32,19 +32,18 @@ require_once plugin_dir_path(__FILE__) . 'product-category.php';
 //     add_filter('wp_is_application_passwords_available', '__return_true');
 // }
 
-// Change prefix rest api default
+// Change prefix wp-json to wp-kdi of default api
 add_filter('rest_url_prefix', function () {
     return 'wp-kdi'; // đổi wp-json thành api-kdi
 });
 
-
-
+// Plugin: JWT Authenticate
 if (! defined('JWT_AUTH_SECRET_KEY')) {
     define('JWT_AUTH_SECRET_KEY', 'my_custom_secret_key_123456789');
     define('JWT_AUTH_CORS_ENABLE', true);
 }
 
-// Avatar
+// Plugin: Avatar
 add_filter('get_avatar', 'kdi_local_avatar_filter', 10, 6);
 function kdi_local_avatar_filter($avatar, $id_or_email, $size, $default, $alt, $args)
 {
@@ -89,3 +88,39 @@ function kdi_local_avatar_profile_field($user)
     </table>
 <?php
 }
+
+
+// Code:
+// Tăng view cho post khi user truy cập single
+function kdi_increase_post_views($post_id = null)
+{
+    if (!$post_id) {
+        $post_id = get_the_ID();
+    }
+    if (!$post_id) return;
+
+    $views = (int) get_post_meta($post_id, 'post_views_count', true);
+    update_post_meta($post_id, 'post_views_count', $views + 1);
+}
+add_action('wp', function () {
+    if (is_single()) {
+        kdi_increase_post_views();
+    }
+});
+
+// Increase-view API
+add_action('rest_api_init', function () {
+    register_rest_route(API_URL, '/increase-views', [
+        'methods'  => 'POST',
+        'callback' => function (WP_REST_Request $request) {
+            $id = (int) $request->get_param('id');
+            if (!$id) {
+                return new WP_Error('invalid_id', 'Missing post ID', ['status' => 400]);
+            }
+            $views = (int) get_post_meta($id, 'post_views_count', true);
+            update_post_meta($id, 'post_views_count', $views + 1);
+
+            return ['id' => $id, 'views' => $views + 1];
+        },
+    ]);
+});

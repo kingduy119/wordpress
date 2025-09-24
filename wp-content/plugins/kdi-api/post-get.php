@@ -14,13 +14,6 @@ add_action('rest_api_init', function () {
         'callback' => 'kdi_get_posts',
         'permission_callback' => '__return_true',
     ]);
-
-    // GET /wp-json/kdi/v2/posts
-    // register_rest_route(API_URL_V2, '/posts', [
-    //     'methods'  => 'GET',
-    //     'callback' => 'kdi_get_posts_v2',
-    //     'permission_callback' => '__return_true',
-    // ]);
 });
 
 // ID
@@ -129,6 +122,27 @@ function kdi_get_posts(WP_REST_Request $request)
         }
     }
 
+    // ================== Order by views ==================
+    if ($request->get_param('orderby') === 'views') {
+        $args['meta_key'] = 'post_views_count';
+        $args['orderby']  = [
+            'meta_value_num' => 'DESC',
+            'date'           => 'DESC',
+        ];
+    }
+
+
+    // ================== Filter by min_views ==================
+    $min_views = $request->get_param('min_views');
+    if (!is_null($min_views)) {
+        $args['meta_query'][] = [
+            'key'     => 'post_views_count',
+            'value'   => (int) $min_views,
+            'compare' => '>=',
+            'type'    => 'NUMERIC',
+        ];
+    }
+
     // Category
     $cat = $request->get_param('category');
     if (!is_null($cat)) {
@@ -201,18 +215,8 @@ function kdi_get_posts(WP_REST_Request $request)
     $posts = array_map(function ($id) {
         $author_id = (int) get_post_field('post_author', $id);
 
-        // ================== Lấy tất cả ACF field có prefix acf_ ==================
-        $raw_meta = get_post_meta($id);
-        $acf_fields = [];
-
-        foreach ($raw_meta as $key => $val) {
-            if (strpos($key, 'acf_') === 0) {
-                // meta_value luôn là mảng -> lấy phần tử đầu
-                $acf_fields[$key] = is_array($val) && count($val) === 1 ? maybe_unserialize($val[0]) : $val;
-            }
-        }
-
-        return array_merge([
+        // ================== Base data ==================
+        $data = [
             'id'             => $id,
             'title'          => get_the_title($id),
             'slug'           => get_post_field('post_name', $id),
@@ -228,7 +232,16 @@ function kdi_get_posts(WP_REST_Request $request)
                 'name'   => get_the_author_meta('display_name', $author_id),
                 'avatar' => get_avatar_url($author_id),
             ],
-        ], $acf_fields);
+            'views'          => (int) get_post_meta($id, 'post_views_count', true), // 👈 thêm dòng này
+        ];
+
+
+        // ================== ACF ==================
+        if (function_exists('get_fields')) {
+            $data['acf'] = get_fields($id) ?: [];
+        }
+
+        return $data;
     }, $post_ids);
 
     $response = [
@@ -266,79 +279,3 @@ if (!function_exists('wp_cache_flush_group')) {
         }
     }
 }
-
-
-
-// 
-// function kdi_get_posts_v2(WP_REST_Request $request)
-// {
-//     // ================== Params string ==================
-//     $query_string = $_SERVER['QUERY_STRING'] ?? '';
-//     $url = rest_url('wp/v2/posts');
-//     if (!empty($query_string)) {
-//         $url .= '?' . $query_string;
-//     }
-
-//     // ================== Cache key ==================
-//     $cache_key = 'kdi_posts_v2_' . md5($query_string);
-//     $cached = wp_cache_get($cache_key, 'kdi_posts_v2');
-//     if ($cached !== false) {
-//         return rest_ensure_response($cached);
-//     }
-
-//     // ================== Call WP Default API ==================
-//     $response = wp_remote_get($url, ['timeout' => 10]);
-
-//     if (is_wp_error($response)) {
-//         return new WP_Error(
-//             'api_failed',
-//             'Không thể gọi API mặc định',
-//             ['status' => 500]
-//         );
-//     }
-
-//     $body    = wp_remote_retrieve_body($response);
-//     $data    = json_decode($body, true);
-//     $headers = wp_remote_retrieve_headers($response);
-
-//     // ================== Extract pagination ==================
-//     $total       = !empty($headers['x-wp-total']) ? intval($headers['x-wp-total']) : 0;
-//     $total_pages = !empty($headers['x-wp-totalpages']) ? intval($headers['x-wp-totalpages']) : 0;
-//     $paged       = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-
-//     // ================== Custom Response ==================
-//     $custom_response = [
-//         'found'        => $total,
-//         'total_pages'  => $total_pages,
-//         'current_page' => $paged,
-//         'has_more'     => $paged < $total_pages,
-//         'data'         => $data,
-//     ];
-
-//     // ================== Save cache (5 phút) ==================
-//     wp_cache_set($cache_key, $custom_response, 'kdi_posts_v2', 300);
-
-//     return rest_ensure_response($custom_response);
-// }
-
-// // ================== Clear cache khi post thay đổi ==================
-// add_action('save_post', 'kdi_clear_posts_cache_v2');
-// add_action('deleted_post', 'kdi_clear_posts_cache_v2');
-// function kdi_clear_posts_cache_v2()
-// {
-//     wp_cache_flush_group('kdi_posts_v2');
-// }
-
-// // Helper để clear 1 group cache
-// if (!function_exists('wp_cache_flush_group')) {
-//     function wp_cache_flush_group($group)
-//     {
-//         global $wp_object_cache;
-//         if (method_exists($wp_object_cache, 'delete_group')) {
-//             $wp_object_cache->delete_group($group);
-//         } else {
-//             // fallback: flush toàn bộ nếu object cache không hỗ trợ xóa theo group
-//             wp_cache_flush();
-//         }
-//     }
-// }
