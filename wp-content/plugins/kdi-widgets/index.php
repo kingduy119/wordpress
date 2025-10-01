@@ -9,6 +9,9 @@
  * License: later
  */
 
+// #############################################
+// 1. Init
+// #############################################
 if( ! defined( 'KDI_WG_DIR_PATH' ) ) {
     define( 'KDI_WG_DIR_PATH', plugin_dir_path( __FILE__ ) );
 }
@@ -18,23 +21,74 @@ function kdi_get_template_part( $file = '', $args = array() ) {
     include KDI_WG_DIR_PATH . $file;
 }
 
-// ############################################
+// #############################################
+// 2. Import
+// #############################################
 require_once plugin_dir_path( __FILE__ ) . 'includes/abstract/class-wg-field.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-wg-slider.php';
 
-function wg_load_css() {
-    wp_enqueue_style( 'kdi-plugin', plugins_url( 'assets/css/style.css', __FILE__ ) );
-    
-    wp_enqueue_script( 'kdi-slider', plugins_url( 'assets/js/slider1.js', __FILE__ ), array('jquery'), '1.1' );
-    wp_enqueue_script( 'kdi-carousel', plugins_url( 'assets/js/carousel.js', __FILE__ ), '', '1.1' );
-    wp_enqueue_script( 'kdi-gallery', plugins_url( 'assets/js/gallery.js', __FILE__ ), '', '1.1' );
+// Chèn Bootstrap CSS & JS từ CDN
+if ( ! function_exists('kdi_product_widget_enqueue_bootstrap') ) {
+    function is_elementor_preview() {
+        return isset($_GET['elementor-preview']) || isset($_GET['action']) && $_GET['action'] === 'elementor';
+    }
+
+    function kdi_product_widget_enqueue_bootstrap() {
+        // Load trong frontend hoặc khi preview Elementor
+        if ( !is_admin() || is_elementor_preview() ) {
+            wp_enqueue_style(
+                'bootstrap-css',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'
+            );
+            wp_enqueue_script(
+                'bootstrap-js',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
+                [],
+                null,
+                true
+            );
+        }
+    }
+    add_action('wp_enqueue_scripts', 'kdi_product_widget_enqueue_bootstrap');
 }
 
-add_action( 'wp_enqueue_scripts', 'wg_load_css' );
-add_action( 'widgets_init', function() {
-    register_widget('KDI_WG_Slider');
-} );
+if ( ! function_exists('wg_load_css') ) {
+    function wg_load_css() {
+        wp_enqueue_style( 'kdi-plugin', plugins_url( 'assets/css/style.css', __FILE__ ) );
+        
+        wp_enqueue_script( 'kdi-slider', plugins_url( 'assets/js/slider1.js', __FILE__ ), array('jquery'), '1.1' );
+        wp_enqueue_script( 'kdi-carousel', plugins_url( 'assets/js/carousel.js', __FILE__ ), '', '1.1' );
+        wp_enqueue_script( 'kdi-gallery', plugins_url( 'assets/js/gallery.js', __FILE__ ), '', '1.1' );
+    }
 
+    add_action( 'wp_enqueue_scripts', 'wg_load_css' );
+    function kdi_register_widgets() {
+        register_widget( 'KDI_WG_Slider' );
+        register_widget( 'KDI_WG_Posts' );
+    }
+    add_action( 'widgets_init', 'kdi_register_widgets' );
+}
+
+// #############################################
+// 3. Helper
+// #############################################
+if ( ! function_exists('kdi_widget_get_template') ) {
+    function kdi_widget_get_template($template, $args = array()) {
+        $theme_file = locate_template('kdi-widget/' . $template . '.php');
+        
+        if ( $theme_file ) {
+            $file = $theme_file;
+        } else {
+            $file = plugin_dir_path(__FILE__) . 'templates/' . $template . '.php';
+        }
+
+        if ( ! empty($args) && is_array($args) ) {
+            extract($args);
+        }
+
+        include $file;
+    }
+}
 
 
 // #############################################
