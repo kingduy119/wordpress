@@ -124,13 +124,23 @@ function kdi_get_posts(WP_REST_Request $request)
 
     // ================== Order by views ==================
     if ($request->get_param('orderby') === 'views') {
-        $args['meta_key'] = 'post_views_count';
+        // $args['meta_key'] = 'post_views_count';
         $args['orderby']  = [
             'meta_value_num' => 'DESC',
             'date'           => 'DESC',
         ];
+        $args['meta_query'] = [
+            'relation' => 'OR',
+            [
+                'key'     => 'post_views_count',
+                'compare' => 'EXISTS',
+            ],
+            [
+                'key'     => 'post_views_count',
+                'compare' => 'NOT EXISTS',
+            ]
+        ];
     }
-
 
     // ================== Filter by min_views ==================
     $min_views = $request->get_param('min_views');
@@ -177,11 +187,11 @@ function kdi_get_posts(WP_REST_Request $request)
     $sticky = $request->get_param('sticky');
     if (!is_null($sticky)) {
         $sticky_ids = get_option('sticky_posts');
-        if ($sticky) {
+        if ($sticky === 'only') {
             $args['post__in'] = !empty($sticky_ids) ? $sticky_ids : [0];
             $args['ignore_sticky_posts'] = 1;
-            // } elseif ($sticky === 'exclude') {
-            //     $args['post__not_in'] = !empty($sticky_ids) ? $sticky_ids : [0];
+        } elseif ($sticky === 'exclude') {
+            $args['post__not_in'] = !empty($sticky_ids) ? $sticky_ids : [0];
         } else {
             $args['ignore_sticky_posts'] = 0;
         }
@@ -232,7 +242,8 @@ function kdi_get_posts(WP_REST_Request $request)
                 'name'   => get_the_author_meta('display_name', $author_id),
                 'avatar' => get_avatar_url($author_id),
             ],
-            'views'          => (int) get_post_meta($id, 'post_views_count', true), // 👈 thêm dòng này
+            'views'          => (int) get_post_meta($id, 'post_views_count', true),
+            'post_status'         => get_post_status($id),
         ];
 
 
