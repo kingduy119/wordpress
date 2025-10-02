@@ -1,0 +1,38 @@
+.post-card {
+  .post-thumb {
+    display: block;
+    width: 100%;
+    height: 180px; // tuỳ chỉnh
+    overflow: hidden;
+    border-radius: 0.25rem;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+  }
+
+  .post-title,
+  .post-excerpt {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 2;
+    -webkit-line-clamp: 2; // chỉ hiện 2 dòng
+  }
+
+  .post-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .post-excerpt {
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+}
