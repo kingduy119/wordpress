@@ -67,28 +67,63 @@ if (! class_exists('KDI_WG_Posts')) {
 
         public function widget($args, $instance)
         {
-            // $total        = !empty($instance['total']) ? (int)$instance['total'] : 4;
             $total = isset($instance['total']) && $instance['total']
                 ? absint($instance['total'])
                 : (isset($this->settings['total']['std']) ? $this->settings['total']['std'] : 4);
+
             $row_class    = !empty($instance['row_class']) ? esc_attr($instance['row_class']) : 'row g-4';
             $column_class = !empty($instance['column_class']) ? esc_attr($instance['column_class']) : 'col-md-3';
 
             echo $args['before_widget'];
 
-            $query = new WP_Query([
+            // Build query args
+            $query_args = [
                 'post_type'           => 'post',
                 'posts_per_page'      => $total,
                 'ignore_sticky_posts' => 1,
                 'no_found_rows'       => true,
-            ]);
+            ];
 
+            // Orderby
+            if (!empty($instance['orderby'])) {
+                $query_args['orderby'] = sanitize_text_field($instance['orderby']);
+            }
 
-            // echo '<pre>';
-            // echo 'Total setting: ' . $total . '<br>';
-            // echo 'Post count (post_count): ' . $query->post_count . '<br>';
-            // echo 'Post count (count array): ' . count( $query->posts ) . '<br>';
-            // echo '</pre>';
+            // Order
+            if (!empty($instance['order'])) {
+                $query_args['order'] = sanitize_text_field($instance['order']);
+            }
+
+            // Category
+            if (!empty($instance['category'])) {
+                if (is_numeric($instance['category'])) {
+                    $query_args['cat'] = intval($instance['category']);
+                } else {
+                    $query_args['category_name'] = sanitize_title($instance['category']);
+                }
+            }
+
+            // Tag
+            if (!empty($instance['tag'])) {
+                if (is_numeric($instance['tag'])) {
+                    $query_args['tag_id'] = intval($instance['tag']);
+                } else {
+                    $query_args['tag'] = sanitize_title($instance['tag']);
+                }
+            }
+
+            // Min views (custom field)
+            if (!empty($instance['min_views']) && intval($instance['min_views']) > 0) {
+                $query_args['meta_query'][] = [
+                    'key'     => 'views',
+                    'value'   => intval($instance['min_views']),
+                    'type'    => 'NUMERIC',
+                    'compare' => '>=',
+                ];
+            }
+
+            // Query posts
+            $query = new WP_Query($query_args);
 
             echo '<div class="' . $row_class . '">';
             while ($query->have_posts()) {

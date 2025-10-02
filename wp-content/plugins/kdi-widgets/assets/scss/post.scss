@@ -17,12 +17,12 @@
 
   .post-title,
   .post-excerpt {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-clamp: 2;
-    -webkit-line-clamp: 2; // chỉ hiện 2 dòng
+    display: -webkit-box; // Bắt buộc
+    -webkit-box-orient: vertical; // Bắt buộc
+    -webkit-line-clamp: 2; // Số dòng muốn hiển thị
+    line-clamp: 2; // Tiêu chuẩn cho trình duyệt hỗ trợ
+    overflow: hidden; // Bắt buộc
+    text-overflow: ellipsis; // Để hiện dấu "..."
   }
 
   .post-title {
