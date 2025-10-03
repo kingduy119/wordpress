@@ -65,72 +65,54 @@ if (! class_exists('KDI_WG_Posts')) {
             parent::__construct();
         }
 
-        public function widget($args, $instance)
-        {
-            $total = isset($instance['total']) && $instance['total']
-                ? absint($instance['total'])
-                : (isset($this->settings['total']['std']) ? $this->settings['total']['std'] : 4);
+        public function widget( $args, $instance ) {
+            $total      = !empty($instance['total']) ? absint($instance['total']) : 4;
+            $orderby    = !empty($instance['orderby']) ? $instance['orderby'] : 'date';
+            $order      = !empty($instance['order']) ? $instance['order'] : 'DESC';
+            $category   = !empty($instance['category']) ? $instance['category'] : '';
+            $tag        = !empty($instance['tag']) ? $instance['tag'] : '';
+            $min_views  = isset($instance['min_views']) ? absint($instance['min_views']) : 0;
 
             $row_class    = !empty($instance['row_class']) ? esc_attr($instance['row_class']) : 'row g-4';
-            $column_class = !empty($instance['column_class']) ? esc_attr($instance['column_class']) : 'col-md-3';
+            $column_class = !empty($instance['column_class']) ? esc_attr($instance['column_class']) : '';
 
-            echo $args['before_widget'];
-
-            // Build query args
-            $query_args = [
-                'post_type'           => 'post',
-                'posts_per_page'      => $total,
-                'ignore_sticky_posts' => 1,
-                'no_found_rows'       => true,
+            $args = [
+                'post_type' => 'post',
+                'posts_per_page' => $total,
+                'orderby' => $orderby === 'views' ? 'meta_value_num' : $orderby,
+                'order' => $order,
             ];
 
-            // Orderby
-            if (!empty($instance['orderby'])) {
-                $query_args['orderby'] = sanitize_text_field($instance['orderby']);
+            if ($orderby === 'views') {
+                $args['meta_key'] = 'post_views_count';
             }
 
-            // Order
-            if (!empty($instance['order'])) {
-                $query_args['order'] = sanitize_text_field($instance['order']);
+            if ($category) {
+                $args[is_numeric($category) ? 'cat' : 'category_name'] = $category;
             }
 
-            // Category
-            if (!empty($instance['category'])) {
-                if (is_numeric($instance['category'])) {
-                    $query_args['cat'] = intval($instance['category']);
-                } else {
-                    $query_args['category_name'] = sanitize_title($instance['category']);
-                }
+            if ($tag) {
+                $args[is_numeric($tag) ? 'tag_id' : 'tag'] = $tag;
             }
 
-            // Tag
-            if (!empty($instance['tag'])) {
-                if (is_numeric($instance['tag'])) {
-                    $query_args['tag_id'] = intval($instance['tag']);
-                } else {
-                    $query_args['tag'] = sanitize_title($instance['tag']);
-                }
-            }
-
-            // Min views (custom field)
-            if (!empty($instance['min_views']) && intval($instance['min_views']) > 0) {
-                $query_args['meta_query'][] = [
-                    'key'     => 'views',
-                    'value'   => intval($instance['min_views']),
-                    'type'    => 'NUMERIC',
+            if ($min_views) {
+                $args['meta_query'][] = [
+                    'key' => 'post_views_count',
+                    'value' => $min_views,
                     'compare' => '>=',
+                    'type' => 'NUMERIC',
                 ];
             }
 
-            // Query posts
-            $query = new WP_Query($query_args);
+            $query = new WP_Query($args);
+
 
             echo '<div class="' . $row_class . '">';
-            while ($query->have_posts()) {
+            while ( $query->have_posts() ) {
                 $query->the_post();
 
                 echo '<div class="' . $column_class . '">';
-                kdi_widget_get_template('content-post', [
+                kdi_widget_get_template( 'content-post', [
                     'post' => get_post()
                 ]);
                 echo '</div>';
