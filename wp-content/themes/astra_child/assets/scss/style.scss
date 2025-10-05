@@ -1,0 +1,24 @@
+@use "./search.scss";
+@use "./post.scss";
+@use "./comments.scss";
+
+.kdi-astra-child__pagination {
+  .pagination {
+    .page-item {
+      .page-link {
+        color: #0d6efd;
+        border: none;
+        &:hover {
+          background-color: #0d6efd;
+          color: #fff;
+        }
+      }
+
+      &.active .page-link {
+        background-color: #0d6efd;
+        border: none;
+        color: #fff;
+      }
+    }
+  }
+}
