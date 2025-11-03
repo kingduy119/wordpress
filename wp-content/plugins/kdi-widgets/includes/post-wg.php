@@ -11,16 +11,26 @@ if (! class_exists('KDI_WG_Posts')) {
             $this->wg_description   = __('Posts widget', 'kdi');
 
             $this->settings = [
+                'sticky' => [
+                    'type'    => 'select',
+                    'label'   => __('Sticky posts', 'kdi_widgets'),
+                    'options' => [
+                        'all'      => __('All posts', 'kdi_widgets'),
+                        'only'     => __('Only sticky posts', 'kdi_widgets'),
+                        'exclude'  => __('Exclude sticky posts', 'kdi_widgets'),
+                    ],
+                    'std' => 'all',
+                ],
                 'total' => [
                     'type' => 'number',
-                    'label' => __('Total posts', 'text_domain'),
+                    'label' => __('Total posts', 'kdi_widgets'),
                     'std' => 4,
                     'min' => 1,
                     'max' => 20,
                 ],
                 'orderby' => [
                     'type' => 'select',
-                    'label' => __('Order by', 'text_domain'),
+                    'label' => __('Order by', 'kdi_widgets'),
                     'options' => [
                         'date' => 'Date',
                         'title' => 'Title',
@@ -30,7 +40,7 @@ if (! class_exists('KDI_WG_Posts')) {
                 ],
                 'order' => [
                     'type' => 'select',
-                    'label' => __('Order', 'text_domain'),
+                    'label' => __('Order', 'kdi_widgets'),
                     'options' => [
                         'ASC' => 'Ascending',
                         'DESC' => 'Descending',
@@ -39,25 +49,25 @@ if (! class_exists('KDI_WG_Posts')) {
                 ],
                 'category' => [
                     'type' => 'text',
-                    'label' => __('Category slug or ID', 'text_domain'),
+                    'label' => __('Category slug or ID', 'kdi_widgets'),
                 ],
                 'tag' => [
                     'type' => 'text',
-                    'label' => __('Tag slug or ID', 'text_domain'),
+                    'label' => __('Tag slug or ID', 'kdi_widgets'),
                 ],
                 'min_views' => [
                     'type' => 'number',
-                    'label' => __('Minimum views', 'text_domain'),
+                    'label' => __('Minimum views', 'kdi_widgets'),
                     'std' => 0,
                 ],
                 'row_class' => [
                     'type'  => 'text',
-                    'label' => __('Row class (responsive grid)', 'text_domain'),
+                    'label' => __('Row class (responsive grid)', 'kdi_widgets'),
                     'std'   => 'row g-4 row-cols-2 row-cols-md-3 row-cols-xl-4',
                 ],
                 'column_class' => [
                     'type'  => 'text',
-                    'label' => __('Column class (if needed)', 'text_domain'),
+                    'label' => __('Column class (if needed)', 'kdi_widgets'),
                     'std'   => 'col',
                 ],
             ];
@@ -65,7 +75,8 @@ if (! class_exists('KDI_WG_Posts')) {
             parent::__construct();
         }
 
-        public function widget( $args, $instance ) {
+        public function widget($args, $instance)
+        {
             $total      = !empty($instance['total']) ? absint($instance['total']) : 4;
             $orderby    = !empty($instance['orderby']) ? $instance['orderby'] : 'date';
             $order      = !empty($instance['order']) ? $instance['order'] : 'DESC';
@@ -104,15 +115,27 @@ if (! class_exists('KDI_WG_Posts')) {
                 ];
             }
 
+            $sticky_posts = get_option('sticky_posts');
+            $sticky = !empty($instance['sticky']) ? $instance['sticky'] : '';
+            if ($sticky === 'only') {
+                $args['post__in'] = $sticky_posts;
+                $args['ignore_sticky_posts'] = 0;
+            } elseif ($sticky === 'exclude') {
+                $args['post__not_in'] = $sticky_posts;
+                $args['ignore_sticky_posts'] = 1;
+            } else {
+                $args['ignore_sticky_posts'] = 0;
+            }
+
             $query = new WP_Query($args);
 
 
             echo '<div class="' . $row_class . '">';
-            while ( $query->have_posts() ) {
+            while ($query->have_posts()) {
                 $query->the_post();
 
                 echo '<div class="' . $column_class . '">';
-                kdi_widget_get_template( 'content-post', [
+                kdi_widget_get_template('content-post', [
                     'post' => get_post()
                 ]);
                 echo '</div>';

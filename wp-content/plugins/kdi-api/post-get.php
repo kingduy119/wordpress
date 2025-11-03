@@ -124,7 +124,6 @@ function kdi_get_posts(WP_REST_Request $request)
 
     // ================== Order by views ==================
     if ($request->get_param('orderby') === 'views') {
-        // $args['meta_key'] = 'post_views_count';
         $args['orderby']  = [
             'meta_value_num' => 'DESC',
             'date'           => 'DESC',

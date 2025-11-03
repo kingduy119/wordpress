@@ -10,9 +10,10 @@ add_action('rest_api_init', function () {
     register_rest_route(API_URL, '/users', [
         'methods' => 'GET',
         'callback' => 'kdi_list_users',
-        'permission_callback' => function () {
-            return current_user_can('list_users');
-        },
+        'permission_callback' => '__return_true',
+        // 'permission_callback' => function () {
+        //     return current_user_can('list_users');
+        // },
     ]);
 
     // User detail
@@ -55,9 +56,9 @@ function kdi_format_user($user, $expose_email = false)
     $data = [
         // Core fields from wp_users
         'id'                  => $user->ID,
-        'username'          => $user->user_login,
+        // 'username'          => $user->user_login,
         //'user_pass'         => $user->user_pass, // ❌ Không nên public
-        'user_nicename'       => $user->user_nicename,
+        // 'user_nicename'       => $user->user_nicename,
         'user_email'          => $expose_email ? $user->user_email : '',
         'user_url'            => $user->user_url,
         'user_registered'     => $user->user_registered,
@@ -158,23 +159,130 @@ function kdi_register_user(WP_REST_Request $request)
 // 🔹 GET /users
 function kdi_list_users(WP_REST_Request $request)
 {
+    // ================== Pagination ==================
+    $per_page = (int) $request->get_param('per_page') ?: 10;
+    $paged    = (int) $request->get_param('page') ?: 1;
+    $per_page = min($per_page, 50);
+
     $args = [
-        'number' => $request->get_param('per_page') ?: 10,
-        'paged'  => $request->get_param('page') ?: 1,
+        'number' => $per_page,
+        'offset' => ($paged - 1) * $per_page, // ✅ Dùng offset thay cho paged
+        'fields' => 'all',
     ];
 
+    // ================== Param động ==================
+    $param_map = [
+        'orderby'    => 'sanitize_text_field',
+        'order'      => fn($v) => strtoupper($v) === 'ASC' ? 'ASC' : 'DESC',
+        'include'    => fn($v) => array_map('intval', is_array($v) ? $v : explode(',', $v)),
+        'exclude'    => fn($v) => array_map('intval', is_array($v) ? $v : explode(',', $v)),
+        'meta_key'   => 'sanitize_text_field',
+        'meta_value' => 'sanitize_text_field',
+    ];
+
+
+    foreach ($param_map as $key => $fn) {
+        $val = $request->get_param($key);
+        if (!is_null($val)) {
+            $args[$key] = $fn($val);
+        }
+    }
+
+    // ================== Role ==================
+    $role_param = $request->get_param('role');
+    if (!empty($role_param)) {
+        if (is_array($role_param)) {
+            $args['role__in'] = array_map('sanitize_text_field', $role_param);
+        } elseif (strpos($role_param, ',') !== false) {
+            $args['role__in'] = array_map('sanitize_text_field', explode(',', $role_param));
+        } else {
+            $args['role'] = sanitize_text_field($role_param);
+        }
+    }
+
+    // ================== Search ==================
+    $search = $request->get_param('search');
+    if (!is_null($search)) {
+        $args['search'] = '*' . esc_sql($search) . '*';
+    }
+
+    // ================== Meta query ==================
+    $meta_key = $request->get_param('meta_key');
+    $meta_value = $request->get_param('meta_value');
+    if ($meta_key && $meta_value) {
+        $args['meta_query'] = [
+            [
+                'key'   => sanitize_text_field($meta_key),
+                'value' => sanitize_text_field($meta_value),
+            ]
+        ];
+    }
+
+    // ================== Nếu có include => bỏ qua phân trang ==================
+    if (!empty($args['include'])) {
+        unset($args['number'], $args['offset']);
+    }
+
+    // ================== Cache ==================
+    ksort($args);
+    $cache_key = 'kdi_users_v1_' . md5(serialize($args));
+    $cached = wp_cache_get($cache_key, 'kdi_users');
+    if ($cached !== false) {
+        return rest_ensure_response($cached);
+    }
+
+    // ================== Query ==================
     $user_query = new WP_User_Query($args);
+    $results = $user_query->get_results();
+
+    if (empty($results)) {
+        return rest_ensure_response([
+            'found'        => 0,
+            'total_pages'  => 0,
+            'current_page' => $paged,
+            'has_more'     => false,
+            'data'         => [],
+        ]);
+    }
+
+    // ================== Format data ==================
     $users = array_map(function ($u) {
         return kdi_format_user($u, true);
-    }, $user_query->get_results());
+    }, $results);
 
-    return new WP_REST_Response([
-        'users'    => $users,
-        'total'    => $user_query->get_total(),
-        'page'     => (int) $args['paged'],
-        'per_page' => (int) $args['number'],
-    ], 200);
+    $total = $user_query->get_total();
+    $total_pages = !empty($args['include'])
+        ? 1
+        : ceil($total / $per_page);
+
+    $response = [
+        'found'        => $total,
+        'total_pages'  => $total_pages,
+        'current_page' => $paged,
+        'has_more'     => empty($args['include']) && $paged < $total_pages,
+        'data'         => $users,
+    ];
+
+    // ================== Cache 5 phút ==================
+    wp_cache_set($cache_key, $response, 'kdi_users', 300);
+
+    return rest_ensure_response($response);
 }
+
+function kdi_clear_user_cache($user_id)
+{
+    if (function_exists('wp_cache_flush_group')) {
+        wp_cache_flush_group('kdi_users');
+    } else {
+        // fallback - clear manually
+        wp_cache_flush();
+    }
+}
+add_action('user_register', 'kdi_clear_user_cache');
+add_action('profile_update', 'kdi_clear_user_cache');
+add_action('delete_user', 'kdi_clear_user_cache');
+
+
 
 
 // 🔹 GET /users/{id}

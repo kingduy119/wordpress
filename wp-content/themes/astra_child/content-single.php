@@ -4,7 +4,7 @@
     <?php get_template_part('template-parts/breadcrumb'); ?>
 
     <!-- Header -->
-   <header class="d-flex flex-column gap-2">
+    <header class="d-flex flex-column gap-2">
         <div class="d-flex text-muted small gap-2 align-items-center">
             <span><i class="bi bi-person"></i> <?php the_author(); ?></span>
             <span class="separator">•</span>
